@@ -1,0 +1,25 @@
+.login-left,
+.login-right,
+.signup-left,
+.signup-right {
+  width: 50vw;
+}
+
+.login-container,
+.signup-container {
+  height: inherit;
+}
+
+.left-text {
+  width: 65%;
+  text-align: center;
+}
+
+.login-right,
+.signup-right {
+  overflow-y: auto;
+}
+
+.left-image {
+  height: 100%;
+}

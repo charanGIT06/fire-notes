@@ -1,0 +1,22 @@
+.notes {
+    background-color: red;
+}
+.test-page, .notes-page, .archive-page, .trash-page, .profile-page, .login-page, .signup-page {
+    height: 88vh;
+}
+.main-app {
+    height: inherit;
+}
+.nav {
+    height: 12vh;
+}
+.main-section {
+    overflow-y: auto;
+}
+.link {
+    border-top-right-radius: 50px;
+    border-bottom-right-radius: 50px;
+}
+.link-active, .link-drawer-active {
+    background-color: #ffb02e;
+}

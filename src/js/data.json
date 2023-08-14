@@ -1,0 +1,77 @@
+{
+  "usernames": [
+    "admin",
+    "user1",
+    "user2",
+    "user3",
+    "user4",
+    "user5",
+    "user6",
+    "user7",
+    "user8"
+  ],
+  "users": [
+    {
+      "uid": 1,
+      "username": "admin",
+      "password": "admin",
+      "email": "admin@gmail.com",
+      "profile": {
+        "firstName": "Admin",
+        "lastName": "admin",
+        "location": "admin"
+      },
+      "labels": [
+        {
+          "name": "study",
+          "color": "red"
+        }
+      ]
+    }
+  ],
+  "notes": {
+    "active": [
+      {
+        "heading": "",
+        "content": "",
+        "color": "",
+        "isPinned": false,
+        "isArchived": false,
+        "isDeleted": false,
+        "labels": [
+          {
+            "name": "work",
+            "color": "red"
+          }
+        ]
+      }
+    ],
+    "archived": [],
+    "deleted": []
+  },
+  "shared": [
+    {
+      "uid": {
+        "notes": [
+          {
+            "note": {},
+            "permissions": {
+              "canEdit": true,
+              "canDelete": true,
+              "canShare": true
+            },
+            "sharedBy": {
+              "uid": 1,
+              "displayName": "admin",
+              "profile": {
+                "firstName": "Admin",
+                "lastName": "admin",
+                "location": "admin"
+              }
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

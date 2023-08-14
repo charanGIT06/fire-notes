@@ -1,0 +1,67 @@
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --yellow_00: #fff6cc;
+  --yellow_0: #FFF2B2;
+  --yellow_1: #FFEA00;
+  --yellow_2: #FFDD00;
+  --yellow_3: #FFD000;
+  --yellow_4: #FFC300;
+  --yellow_5: #FFB700;
+  --yellow_6: #FFAA00;
+  --yellow_7: #FFA200;
+  --yellow_8: #FF9500;
+  --yellow_9: #FF8800;
+  --yellow_10: #FF7B00;
+}
+
+.notes,
+.archive,
+.trash {
+  overflow-y: auto;
+}
+
+.text-area {
+  overflow: hidden;
+  resize: none;
+}
+
+.notecard {
+  border-radius: 20px !important;
+  height: 250px !important;
+}
+
+.tag-container {
+  overflow-x: auto;
+}
+
+.new-note-bottom {
+  position: absolute;
+  bottom: 0px;
+  border-top-left-radius: 25px;
+  border-top-right-radius: 25px;
+  background-color: var(--yellow_00) !important;
+  color: black !important;
+}
+
+.ncard-header {
+  height: 20% !important;
+}
+
+.ncard-body {
+  height: 60% !important;
+}
+
+.ncard-footer {
+  height: 20% !important;
+}
+
+.tags {
+  overflow: calc(100% - 20px);
+}
+
+.new-note-container {
+  border-radius: 20px;
+}
