@@ -9,7 +9,7 @@ export function NavProvider({ children }) {
     children: propTypes.node.isRequired,
   };
 
-  const [active, setActive] = useState(['/', 'Notes'])
+  const [active, setActive] = useState([])
   const [searchText, setSearchText] = useState('')
 
   return (

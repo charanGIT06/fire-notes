@@ -9,6 +9,7 @@ import firebase from '../js/firebase.js';
 import { useNavigate, useParams } from 'react-router-dom';
 import { BsUpload } from 'react-icons/bs';
 import ThemeState from '../context/ThemeContext';
+import NavState from '../context/NavContext';
 
 const Profile = () => {
   const auth = getAuth();
@@ -16,6 +17,7 @@ const Profile = () => {
   const navigate = useNavigate();
   const { userId } = useParams();
   const { theme } = ThemeState();
+  const { setActive } = NavState();
 
   const { user, setUser } = UserAuth();
   const [edit, setEdit] = useState(false);
@@ -59,16 +61,17 @@ const Profile = () => {
 
   useEffect(() => {
     if (!profile) {
-      console.log('Setting profile')
+      // console.log('Setting profile')
       setProfileDetails(user.displayName)
     } else {
-      console.log('profile found')
+      // console.log('profile found')
       setUsername(profile.displayName)
       setFirstName(profile.firstName)
       setLastName(profile.lastName)
       setEmail(profile.email)
       setLocation(profile.location)
     }
+    setActive('profile')
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
@@ -83,11 +86,11 @@ const Profile = () => {
                 border: '1px solid #e2e8f0',
               } : {}}>
                 <CardBody>
-                  <div className="section-1 d-flex align-items-center p-3">
+                  <div className="section-1 d-flex flex-column flex-md-row align-items-center p-3">
                     <div className="profile-img">
                       <Avatar name={user && user.displayName} size='xl' />
                     </div>
-                    <div className="basic-info ps-4 w-100">
+                    <div className="basic-info ps-4 w-100 my-3">
                       <div className="name">
                         <h5 className='pb-2 mb-0'>{firstName} {lastName}</h5>
                       </div>
@@ -112,8 +115,8 @@ const Profile = () => {
                   border: '1px solid #e2e8f0',
                 } : {}}>
                   <CardBody>
-                    <div className="section-2 px-3">
-                      <div className="user-details d-flex">
+                    <div className="section-2 px-3 d-flex flex-column">
+                      <div className="user-details d-flex flex-column flex-md-row">
                         <div className="inputs pt-2 w-100">
                           <div className="username mb-4">
                             <FormControl id="username" className='pe-2'>
@@ -121,12 +124,12 @@ const Profile = () => {
                               <Input id='profile-username' className="username" defaultValue={username} variant={edit ? 'outline' : 'unstyled'} placeholder="Username" isReadOnly={!edit} onChange={(e) => { setUsername(e.target.value) }} />
                             </FormControl>
                           </div>
-                          <div className="name mb-4 d-flex w-100">
-                            <FormControl id="firstname" className="pe-2">
+                          <div className="name mb-4 d-flex flex-column flex-md-row w-100">
+                            <FormControl id="firstname" className="pe-3">
                               <FormLabel>First Name</FormLabel>
                               <Input id='profile-firstname' className="firstname" defaultValue={firstName} variant={edit ? 'outline' : 'unstyled'} placeholder="First Name" isReadOnly={!edit} onChange={(e) => { setFirstName(e.target.value) }} />
                             </FormControl>
-                            <FormControl id="lastname" className="pe-2">
+                            <FormControl id="lastname" className="pe-2 pt-4 pt-md-0">
                               <FormLabel>Last Name</FormLabel>
                               <Input id='profile-lastname' className="lastname" defaultValue={lastName} variant={edit ? 'outline' : 'unstyled'} placeholder="Last Name" isReadOnly={!edit} onChange={(e) => {
                                 setLastName(e.target.value);
@@ -140,7 +143,7 @@ const Profile = () => {
                             </FormControl>
                           </div>
                         </div>
-                        <div className="editButton">
+                        <div className="editButton mt-4 mt-md-0">
                           <Button size='sm' rightIcon={<EditIcon />} variant='outline' style={{ borderRadius: '50px' }}
                             colorScheme={theme === 'dark' ? 'white' : 'black'}
                             onClick={() => {
@@ -170,7 +173,7 @@ const Profile = () => {
                     <div className="section-3 px-3 pt-2">
                       <div className="btn-container">
                         <Button variant='solid' className='me-2'>Change Password</Button>
-                        <Button variant='solid' colorScheme='red' onClick={() => {
+                        <Button variant='solid' className='mt-2 mt-md-0' colorScheme='red' onClick={() => {
                           signOut(auth).then(() => {
                             setUser({})
                             setProfile({})

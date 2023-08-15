@@ -52,7 +52,7 @@
   "shared": [
     {
       "uid": {
-        "notes": [
+        "sharedNotes": [
           {
             "note": {},
             "permissions": {

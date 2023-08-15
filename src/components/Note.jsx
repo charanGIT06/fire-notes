@@ -22,6 +22,13 @@ const Note = ({ note }) => {
 					</Text>
 				</CardBody>
 				<CardFooter className="ncard-footer py-0 d-flex flex-row align-items-center">
+					{/* {note.collaborators.length > 0 ? (
+						note.collaborators.map((user) => {
+							<p>{user.email}</p>
+						})
+					) : (
+						<p>None</p>
+					) } */}
 				</CardFooter>
 			</Card>
 		</div>

@@ -2,6 +2,7 @@ import { DeleteIcon } from '@chakra-ui/icons';
 import { IconButton, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Textarea, Tooltip } from '@chakra-ui/react';
 import propsTypes from 'prop-types';
 import { BiSolidArchiveOut } from 'react-icons/bi';
+import '../../scss/Shared.scss'
 
 const ArchiveModal = ({
   isOpen,
@@ -21,6 +22,14 @@ const ArchiveModal = ({
     unArchiveCurrentNote: propsTypes.func.isRequired,
     deleteCurrentNote: propsTypes.func.isRequired,
   };
+
+  window.addEventListener('popstate', () => {
+    if (isOpen === true) {
+      onClose();
+      window.history.forward();
+    }
+  })
+
   return (
     <div className="archive-modal">
       <Modal isOpen={isOpen} onClose={onClose} isCentered motionPreset="slideInBottom" size='xl' scrollBehavior="inside">
@@ -31,12 +40,31 @@ const ArchiveModal = ({
           </ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <Textarea
-              className={`text-area mb-4`} placeholder="Take a note..."
-              rows='1' size='md' height={50} variant='unstyled' isReadOnly={true}
-              autoFocus={true}
-              defaultValue={currentNote.content}
-            />
+            <div className="m-body d-flex flex-row">
+              <Textarea
+                className={`text-area mb-4 w-50`} placeholder="Take a note..."
+                rows='1' size='md' height={50} variant='unstyled' isReadOnly={true}
+                autoFocus={true}
+                defaultValue={currentNote.content}
+              />
+              {/* <div className="collabs-container w-50">
+                <div className="shared-collaborators">
+                  {
+                    currentNote.collaborators && currentNote.collaborators.map((collab, index) => {
+                      return (
+                        <div className="collab d-flex flex-row align-items-center px-1 py-1 mb-1 rounded bg-light" key={index}>
+                          <Avatar name={collab.displayName} label={collab.email} />
+                          <div className="details px-2">
+                            <h6 className='m-0 p-0'>{collab.displayName}</h6>
+                            <p className='m-0 p-0'>{collab.email}</p>
+                          </div>
+                        </div>
+                      )
+                    })
+                  }
+                </div>
+              </div> */}
+            </div>
           </ModalBody>
           <ModalFooter>
             <div className="tag-container w-100" style={{ overflow: 'auto' }}>

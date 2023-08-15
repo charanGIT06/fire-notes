@@ -19,6 +19,13 @@ const TrashModal = ({
     restoreCurrentNote: propsTypes.func.isRequired,
   };
 
+  window.addEventListener('popstate', () => {
+    if (isOpen === true) {
+      onClose();
+      window.history.forward();
+    }
+  })
+
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered motionPreset="slideInBottom" size='xl' scrollBehavior="inside">
       <ModalOverlay />

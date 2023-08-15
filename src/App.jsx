@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Notes from './pages/Notes.jsx'
-import Test from './pages/Test.jsx'
+// import Test from './pages/Test.jsx'
 import { ChakraProvider } from '@chakra-ui/react'
 import Nav from './components/Nav.jsx'
 import Archive from './pages/Archive.jsx'
@@ -13,9 +13,10 @@ import { UserProvider } from './context/UserContext.jsx'
 import { ThemeProvider } from './context/ThemeContext.jsx'
 import Login from './pages/Login.jsx'
 import Signup from './pages/Signup.jsx'
-import Shared from './pages/Shared.jsx'
-import {ColorModeScript} from '@chakra-ui/react'
+// import Shared from './pages/Shared.jsx'
+import { ColorModeScript } from '@chakra-ui/react'
 import theme from '../src/js/theme.js'
+import ProtectedRoute from './components/ProtectedRoute.jsx'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
@@ -28,14 +29,14 @@ ReactDOM.createRoot(document.getElementById('root')).render(
               <div className="app">
                 <Nav />
                 <Routes>
-                  <Route path="/" element={<Notes />} />
+                  <Route path="/" element={<ProtectedRoute><Notes /></ProtectedRoute>} />
                   <Route path="/login" element={<Login />} />
                   <Route path="/signup" element={<Signup />} />
-                  <Route path="/archive" element={<Archive />} />
-                  <Route path="/trash" element={<Trash />} />
-                  <Route path="/shared" element={<Shared />} />
-                  <Route path="/profile/:userId" element={<Profile />} />
-                  <Route path="/test" element={<Test />} />
+                  <Route path="/archive" element={<ProtectedRoute><Archive /></ProtectedRoute>} />
+                  <Route path="/trash" element={<ProtectedRoute><Trash /></ProtectedRoute>} />
+                  {/* <Route path="/shared" element={<ProtectedRoute><Shared /></ProtectedRoute>} /> */}
+                  <Route path="/profile/:userId" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+                  {/* <Route path="/test" element={<Test />} /> */}
                 </Routes>
               </div>
             </NavProvider>

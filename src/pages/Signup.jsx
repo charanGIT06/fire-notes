@@ -16,7 +16,7 @@ const Signup = () => {
   const db = firebase.db;
   const { theme } = ThemeState();
 
-  const { createUser } = UserAuth();
+  const { createUser, googleLogin, facebookLogin } = UserAuth();
 
   // Data
   const [username, setUsername] = useState("");
@@ -45,22 +45,27 @@ const Signup = () => {
     const querySnapshot = await getDocs(q);
     const usernames = [];
     querySnapshot.forEach((doc) => {
-      usernames.push(doc.data().username);
+      usernames.push(doc.data().displayName);
     });
     setUsernames(usernames);
   };
 
   const checkUserName = () => {
     console.log("Checking")
-    for (let i = 0; i < usernames.length; i++) {
-      usernames[i]
-      if (usernames[i].toLowerCase() === username.toLowerCase()) {
-        console.log("Username already exists");
-        setUserNameError(true);
-        setUsernameAvailable(false);
-        // return true;
+    try {
+
+      for (let i = 0; i < usernames.length; i++) {
+        usernames[i]
+        if (usernames[i].toLowerCase() === username.toLowerCase()) {
+          console.log("Username already exists");
+          setUserNameError(true);
+          setUsernameAvailable(false);
+          // return true;
+        }
+        // return false;
       }
-      // return false;
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -143,7 +148,7 @@ const Signup = () => {
       <Banner />
       <div className={`signup-right   w-100 ${theme === 'dark' ? 'bg-dark text-white' : ''}`}>
         <div className="signup-container px-0 py-5 d-flex flex-row justify-content-center align-items-center">
-          <Card size='md' className={`signup-card w-75 p-3 ${theme === 'dark' ? 'bg-dark text-white' : 'bg-light text-dark'}`} border={theme == 'dark' ? '1px' : '0px'}>
+          <Card size='md' className={`signup-card w-75 p-md-3 p-sm-1 ${theme === 'dark' ? 'bg-dark text-white' : 'bg-light text-dark'}`} border={theme == 'dark' ? '1px' : '0px'}>
             <CardBody>
               <div className="heading">
                 <Heading size='lg' className="signup-heading">Signup</Heading>
@@ -219,8 +224,8 @@ const Signup = () => {
                 </AbsoluteCenter>
               </Box>
               <div className="provider-signups d-flex flex-row justify-content-center">
-                <Button variant='solid' className='me-2' > <BsGoogle className='me-2' /> Google</Button>
-                <Button colorScheme='facebook' variant='solid' ><BsFacebook className='me-2' size='1.2em' /> Facebook</Button>
+                <Button variant='solid' className='me-2' onClick={() => {googleLogin()}} >  Google</Button>
+                <Button colorScheme='facebook' variant='solid' onClick={()=>{facebookLogin()}}> Facebook</Button>
               </div>
             </CardBody>
           </Card>

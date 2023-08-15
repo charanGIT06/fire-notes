@@ -2,7 +2,7 @@ import { useState, createContext, useContext } from 'react';
 import propTypes from 'prop-types';
 import firebase from '../js/firebase.js'
 import { useToast } from '@chakra-ui/react';
-import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { FacebookAuthProvider, GoogleAuthProvider, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, updateProfile } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import { collection, doc, onSnapshot, query, setDoc, where } from 'firebase/firestore';
 import { useEffect } from 'react';
@@ -81,7 +81,7 @@ export function UserProvider({ children }) {
         console.log("User Added!");
       })
 
-      navigate(`/profile/${username}`);
+      navigate('/');
       toast({
         title: "Account Created",
         description: "Your account has been created.",
@@ -120,6 +120,37 @@ export function UserProvider({ children }) {
       });
   }
 
+  const facebookLogin = async () => {
+    try {
+      const provider = new FacebookAuthProvider();
+      await signInWithPopup(auth, provider).then((result) => {
+        const credential = FacebookAuthProvider.credentialFromResult(result);
+        const token = credential.accessToken; //eslint-disable-line
+        const user = result.user;
+        navigate('/');
+        setUser(user);
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const googleLogin = async () => {
+    try {
+      const provider = new GoogleAuthProvider();
+      await signInWithPopup(auth, provider).then((result) => {
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        const token = credential.accessToken; //eslint-disable-line
+        const user = result.user;
+        navigate('/');
+        setUser(user);
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser)
@@ -131,7 +162,7 @@ export function UserProvider({ children }) {
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <UserContext.Provider value={{ user, setUser, profile, setProfile, setProfileDetails, login, createUser }}>
+    <UserContext.Provider value={{ user, setUser, profile, setProfile, setProfileDetails, login, createUser, googleLogin, facebookLogin }}>
       {children}
     </UserContext.Provider>
   )
