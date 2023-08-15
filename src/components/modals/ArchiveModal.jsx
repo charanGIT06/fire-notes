@@ -2,7 +2,7 @@ import { DeleteIcon } from '@chakra-ui/icons';
 import { IconButton, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Textarea, Tooltip } from '@chakra-ui/react';
 import propsTypes from 'prop-types';
 import { BiSolidArchiveOut } from 'react-icons/bi';
-import '../../scss/Shared.scss'
+import '../../scss/shared.scss'
 
 const ArchiveModal = ({
   isOpen,
