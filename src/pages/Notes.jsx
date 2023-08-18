@@ -106,6 +106,7 @@ const Notes = () => {
 				await addDoc(activeNotesCollection, {
 					uid: user.uid,
 					timestamp: time,
+					collaborators: [],
 					...newNote,
 				}).then(() => {
 					setNewNote({})

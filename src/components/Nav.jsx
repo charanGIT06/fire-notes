@@ -67,7 +67,7 @@ const Nav = () => {
           <DrawerBody className={theme === 'dark' ? "bg-dark text-white m-0 p-0" : 'bg-white text-dark'}>
             <div className="links">
               <ul className="list-unstyled">
-                {[['/', 'Notes'], ['/archive', 'Archive'], ['/trash', 'Trash'], ['/profile/' + username, 'Profile']].map(([route, text]) => {
+                {[['/', 'Notes'], ['/shared', 'Shared'], ['/archive', 'Archive'], ['/trash', 'Trash'], ['/profile/' + username, 'Profile']].map(([route, text]) => {
                   return (
                     <Link to={route} onClick={() => {
                       onClose()

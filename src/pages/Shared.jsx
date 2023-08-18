@@ -3,11 +3,11 @@ import NotesContainer from "../components/NotesContainer"
 import SideNav from "../components/SideNav"
 import ThemeState from "../context/ThemeContext"
 import UserAuth from "../context/UserContext"
-import { collection, deleteDoc, doc, getDocs, query, setDoc, where } from "firebase/firestore"
+import { collection, getDocs } from "firebase/firestore"
 import firebase from "../js/firebase"
 import NavState from "../context/NavContext"
 import { useDisclosure } from "@chakra-ui/react"
-import ArchiveModal from "../components/modals/ArchiveModal"
+import SharedModal from "../components/modals/SharedModal"
 
 
 
@@ -27,52 +27,50 @@ const Shared = () => {
   const setModalData = (note) => {
     setCurrentNote({ ...note })
   }
-  const unArchiveCurrentNote = async () => {
-    try {
-      const userNotes = doc(collection(db, 'notes'), user.uid)
-      const archivedNote = doc(collection(userNotes, 'archived'), currentNote.id)
-      await deleteDoc(archivedNote)
+  // const unArchiveCurrentNote = async () => {
+  //   try {
+  //     const userNotes = doc(collection(db, 'notes'), user.uid)
+  //     const archivedNote = doc(collection(userNotes, 'archived'), currentNote.id)
+  //     await deleteDoc(archivedNote)
 
-      const activeNote = doc(collection(userNotes, 'active'), currentNote.id)
-      await setDoc(activeNote, currentNote)
+  //     const activeNote = doc(collection(userNotes, 'active'), currentNote.id)
+  //     await setDoc(activeNote, currentNote)
 
-      console.log('note Unarchived')
-      onClose()
-      getNotes()
-    } catch (error) {
-      console.log(error)
-    }
-  }
+  //     console.log('note Unarchived')
+  //     onClose()
+  //     getNotes()
+  //   } catch (error) {
+  //     console.log(error)
+  //   }
+  // }
 
-  const deleteCurrentNote = async () => {
-    try {
-      const userNotes = doc(collection(db, 'notes'), user.uid)
-      const archivedNote = doc(collection(userNotes, 'archived'), currentNote.id)
-      await deleteDoc(archivedNote)
+  // const deleteCurrentNote = async () => {
+  //   try {
+  //     const userNotes = doc(collection(db, 'notes'), user.uid)
+  //     const archivedNote = doc(collection(userNotes, 'archived'), currentNote.id)
+  //     await deleteDoc(archivedNote)
 
-      const deletedNotesCollection = collection(userNotes, 'trash')
-      const deletedNote = doc(deletedNotesCollection, currentNote.id)
-      await setDoc(deletedNote, currentNote)
+  //     const deletedNotesCollection = collection(userNotes, 'trash')
+  //     const deletedNote = doc(deletedNotesCollection, currentNote.id)
+  //     await setDoc(deletedNote, currentNote)
 
-      console.log('note deleted from archive')
-      getNotes()
-    } catch (error) {
-      console.log(error)
-    }
-  }
+  //     console.log('note deleted from archive')
+  //     getNotes()
+  //   } catch (error) {
+  //     console.log(error)
+  //   }
+  // }
 
 
   const getNotes = async () => {
     try {
       const notes = []
-      const q = query(collection(db, 'notes', user.uid, 'active'))
-      await getDocs(q).then(
-        (querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            notes.push({ id: doc.id, ...doc.data() })
-          })
-        }
-      )
+      console.log('Inside GetNotes')
+      const docRef = collection(db, 'notes', user.uid, 'shared')
+      const docs = await getDocs(docRef)
+      docs.forEach(doc => {
+        notes.push(doc.data())
+      })
 
       setSharedNotes(notes)
       // console.log('notes', notes)
@@ -94,18 +92,18 @@ const Shared = () => {
         <SideNav />
         <div className="main-section col-12 col-md-10 py-3">
           <div className="main-content">
-            <h1>Shared</h1>
+            <h5 className="ms-3 mb-3">Shared</h5>
             <NotesContainer notes={sharedNotes} searchText={searchText} setModalData={setModalData} onOpen={onOpen} />
           </div>
         </div>
 
-        <ArchiveModal
+        <SharedModal
           isOpen={isOpen}
           onClose={onClose}
           onOpen={onOpen}
           currentNote={currentNote}
-          unArchiveCurrentNote={unArchiveCurrentNote}
-          deleteCurrentNote={deleteCurrentNote}
+        // unArchiveCurrentNote={unArchiveCurrentNote}
+        // deleteCurrentNote={deleteCurrentNote}
         />
       </div>
     </div>
