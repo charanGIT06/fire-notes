@@ -40,7 +40,7 @@ const Profile = () => {
             location: location
           }
         });
-        console.log(doc.data());
+        // console.log(doc.data());
       });
     });
   }

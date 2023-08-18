@@ -1,14 +1,12 @@
 import { DeleteIcon } from '@chakra-ui/icons';
-import { Button, IconButton, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Textarea, Tooltip } from '@chakra-ui/react';
+import { Avatar, Button, IconButton, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Textarea, Tooltip } from '@chakra-ui/react';
 import { BsFillArchiveFill, BsFillPersonPlusFill, BsPinFill } from 'react-icons/bs'; //eslint-disable-line
 import propsTypes from 'prop-types';
-// import CollaboratorPopover from '../popovers/CollaboratorPopover';
-// import { useState } from 'react';
-// import { collection, doc, getDocs, query,  updateDoc, where } from 'firebase/firestore';
-// import firebase from '../../js/firebase';
-// import UserAuth from '../../context/UserContext';
-// import { useHistory } from 'react-router-dom';
-// import { useEffect } from 'react';
+import CollaboratorPopover from '../popovers/CollaboratorPopover';
+import { collection, doc, getDocs, query, setDoc, updateDoc, where } from 'firebase/firestore';
+import UserAuth from '../../context/UserContext';
+import firebase from '../../js/firebase';
+import { useRef, useState } from 'react';
 
 const NoteModal = ({
   isOpen,
@@ -20,6 +18,7 @@ const NoteModal = ({
   updateNote,
   deleteNote,
   archiveNote,
+  getNotes,
 }) => {
   NoteModal.propTypes = {
     isOpen: propsTypes.bool.isRequired,
@@ -31,115 +30,105 @@ const NoteModal = ({
     updateNote: propsTypes.func.isRequired,
     deleteNote: propsTypes.func.isRequired,
     archiveNote: propsTypes.func.isRequired,
+    getNotes: propsTypes.func.isRequired,
     setModalData: propsTypes.func.isRequired,
   };
 
-  // const db = firebase.db;
-  // const { user } = UserAuth();
-
-  // const [collaborators, setCollaborators] = useState([]);
-  // const [newCollaborator, setNewCollaborator] = useState('');
-
-  // const [alert, setAlert] = useState({});
-
-  // const findUser = (collaborators, email) => {
-  //   const user = collaborators.find((collaborator) => {
-  //     if (collaborator.email === email) {
-  //       console.log("Already in the list")
-  //       return true;
-  //     } else {
-  //       console.log('Added to the list')
-  //       return false;
-  //     }
-  //   });
-  //   return user;
-  // }
-
-  // const getUserFromEmail = async (email) => {
-  //   try {
-  //     const usersCollection = collection(db, 'users')
-  //     const q = query(usersCollection, where('email', '==', email))
-  //     const querySnapshot = await getDocs(q)
-  //     const user = querySnapshot.docs.map(doc => {
-  //       return {
-  //         uid: doc.data().uid,
-  //         email: doc.data().email,
-  //         displayName: doc.data().username,
-  //         firstName: doc.data().profile.firstName,
-  //         lastName: doc.data().profile.lastName,
-  //       }
-  //     })
-  //     if (user.length === 0) {
-  //       return 'none'
-  //     }
-  //     return user[0]
-  //   } catch (error) {
-  //     console.log(error)
-  //   }
-  // }
-
-  // const setNoteInSharedNotes = async (uid) => {
-  //   try {
-  //     const sharedNotesCollection = collection(db, 'shared', uid, 'sharedNotes')
-  //     const sharedDoc = doc(sharedNotesCollection, currentNote.id)
-  //     await updateDoc(sharedDoc, {
-  //       id: currentNote.id,
-  //       note: currentNote,
-  //       collaborators: collaborators,
-  //       permissions: {
-  //         read: true,
-  //         write: true,
-  //       },
-  //       owner: {
-  //         uid: user.uid,
-  //         email: user.email,
-  //         displayName: user.displayName,
-  //       }
-  //     })
-  //   } catch (error) {
-  //     console.log(error)
-  //   }
-  // }
-
-  // const setCollaboeatorsForUser = async () => {
-  //   try {
-  //     await updateDoc(doc(collection(db, 'notes', user.uid, 'active'), currentNote.id), {
-  //       collaborators: collaborators
-  //     })
-  //     setNewCollaborator('');
-  //     console.log('Added Collaborator')
-
-  //     await setNoteInSharedNotes(user.uid);
-  //   } catch (error) {
-  //     console.log(error)
-  //   }
-  // }
+  const db = firebase.db;
+  const { user } = UserAuth();
 
 
-  // const setCollaborator = async () => {
-  //   if (newCollaborator === '') {
-  //     return;
-  //   } else {
-  //     const collaborator = await getUserFromEmail(newCollaborator).then((collaborator) => {
-  //       // if collaborator is not in collaborators array
+  const [alert, setAlert] = useState({});
 
-  //       setCollaborators(findUser(collaborators, collaborator.email) ? [...collaborators, collaborator] : [...collaborators]);
-  //       console.log('collaborators', collaborators)
-  //     });
+  const getUserFromEmail = async (email) => {
+    try {
+      const usersCollection = collection(db, 'users')
+      const q = query(usersCollection, where('email', '==', email))
+      const querySnapshot = await getDocs(q)
+      const user = querySnapshot.docs.map(doc => {
+        return {
+          uid: doc.data().uid,
+          email: doc.data().email,
+          displayName: doc.data().username,
+          firstName: doc.data().profile.firstName,
+          lastName: doc.data().profile.lastName,
+        }
+      })
+      if (user.length === 0) {
+        return 'none'
+      }
+      return user[0]
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
-  //     if (collaborator === 'none') {
-  //       console.log('User not found')
-  //       setAlert({
-  //         alert: true,
-  //         type: 'error',
-  //         message: 'User not found',
-  //         status: 'error'
-  //       })
-  //     } else {
-  //       await setCollaboeatorsForUser();
-  //     }
-  //   }
-  // }
+  const collaboratorRef = useRef();
+
+  const handleClick = async () => {
+    let newCollaborator = {}
+    if (collaboratorRef.current.value === '') {
+      setAlert({
+        alert: true,
+        status: 'error',
+        message: 'Please enter an email'
+      })
+      return
+    } else if (collaboratorRef.current.value === user.email) {
+      setAlert({
+        alert: true,
+        status: 'error',
+        message: 'You cannot add yourself as a collaborator'
+      })
+
+    } else {
+      await getUserFromEmail(collaboratorRef.current.value).then((collaborator) => {
+        newCollaborator = collaborator
+      })
+
+      if (newCollaborator === 'none') {
+        console.log('User not found')
+        setAlert({
+          alert: true,
+          status: 'error',
+          message: 'User not found'
+        })
+      } else {
+        const sharedDoc = doc(db, 'notes', newCollaborator.uid, 'shared', currentNote.id)
+        await setDoc(sharedDoc, {
+          ...currentNote,
+          owner: {
+            uid: user.uid,
+            sample: '',
+            email: user.email,
+            displayName: user.displayName,
+          }
+        }).then(() => {
+          console.log('Added to shared notes')
+        })
+
+        const sharedNoteRef = doc(db, 'notes', user.uid, 'active', currentNote.id)
+        setCurrentNoteChanged(true)
+        setCurrentNote({
+          ...currentNote,
+          collaborators: [...currentNote.collaborators || [], newCollaborator]
+        })
+        // await updateNote()
+        await updateDoc(sharedNoteRef, {
+          collaborators: [...currentNote.collaborators || [], newCollaborator]
+        }).then(() => {
+          console.log('Added to collaborators')
+          let prevAlertState = alert.status === 'success' ? true : false
+          setAlert({
+            alert: true,
+            status: 'success',
+            message: (!prevAlertState ? 'User found. Added collaborator.' : 'Added collaborator.')
+          })
+          getNotes()
+        })
+      }
+    }
+  }
 
   window.addEventListener('popstate', () => {
     if (isOpen === true) {
@@ -154,8 +143,7 @@ const NoteModal = ({
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>
-            <Input id='title-input' style={{ fontSize: '20px', fontWeight: '600' }} type="text" defaultValue={currentNote.title} placeholder="Title" variant='unstyled' onClick={() => {
-            }}
+            <Input id='title-input' style={{ fontSize: '20px', fontWeight: '600' }} type="text" defaultValue={currentNote.title} placeholder="Title" variant='unstyled'
               onChange={(e) => {
                 if (!currentNoteChanged) {
                   setCurrentNoteChanged(true)
@@ -186,7 +174,15 @@ const NoteModal = ({
             />
           </ModalBody>
           <ModalFooter className='d-flex flex-column'>
-            <div className="tag-container w-100">
+            <div className="collaborators d-flex flex-row align-items-center mb-2 ps-2 w-100">
+              {/* <p className='p-0 m-0 me-1'>Shared with:</p> */}
+              {currentNote.collaborators && currentNote.collaborators.map((collaborator, index) => {
+                return (
+                  <Tooltip label={collaborator.displayName + '\n' + collaborator.email} placement="top" hasArrow='true' key={index}>
+                    <Avatar className='me-1' size={'sm'} name={collaborator.displayName} src={collaborator.sample} />
+                  </Tooltip>
+                )
+              })}
             </div>
             <div className="btns d-flex flex-row align-items-start justify-content-start w-100 mt-2">
               <div className="left w-100">
@@ -203,29 +199,21 @@ const NoteModal = ({
                     deleteNote()
                   }} />
                 </Tooltip>
-                {/* <IconButton className="round-btn" color='gray.500' variant='ghost' icon={<BsFillPersonPlusFill />} onClick={() => {
-                }} /> */}
-                {/* <CollaboratorPopover
+                <CollaboratorPopover
                   trigger={
-                    <IconButton className="round-btn" color='gray.500' variant='ghost' icon={<BsFillPersonPlusFill />} onClick={() => {
-                    }} />
+                    <IconButton className="round-btn" color='gray.500' variant='ghost' icon={<BsFillPersonPlusFill />} />
                   }
                   header={<h4>Collaborators</h4>}
 
                   body={
                     <div className="form d-flex flex-row">
-                      <Input type='email' placeholder='Enter email...' className='me-1' onChange={(e) => {
-                        if (alert) {
-                          setAlert({ alert: false })
-                        }
-                        setNewCollaborator(e.target.value)
-                      }} />
-                      <Button onClick={() => { setCollaborator() }}>Add</Button>
+                      <Input type='email' placeholder='Enter email...' className='me-1' ref={collaboratorRef} />
+                      <Button onClick={handleClick}>Add</Button>
                     </div>
                   }
                   footer={<></>}
                   alert={alert}
-                /> */}
+                />
               </div>
               <Button onClick={() => {
                 updateNote()

@@ -1,24 +1,24 @@
-import { IconButton, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Textarea, Tooltip } from '@chakra-ui/react';
+import { Avatar, IconButton, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Textarea, Tooltip } from '@chakra-ui/react'; //eslint-disable-line
 import propsTypes from 'prop-types';
-import { BiSolidArchiveIn } from 'react-icons/bi';
-import { FaTrashRestore } from 'react-icons/fa';
+// import { BiSolidArchiveIn } from 'react-icons/bi';
+// import { FaTrashRestore } from 'react-icons/fa';
 
 
 const TrashModal = ({
   isOpen,
   onClose,
   currentNote,
-  archiveCurrentNote,
-  restoreCurrentNote,
+  // archiveCurrentNote,
+  // restoreCurrentNote,
 }) => {
   TrashModal.propTypes = {
     isOpen: propsTypes.bool.isRequired,
     onClose: propsTypes.func.isRequired,
     currentNote: propsTypes.object.isRequired,
-    archiveCurrentNote: propsTypes.func.isRequired,
-    restoreCurrentNote: propsTypes.func.isRequired,
+    // archiveCurrentNote: propsTypes.func.isRequired,
+    // restoreCurrentNote: propsTypes.func.isRequired,
   };
-  
+
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered motionPreset="slideInBottom" size='xl' scrollBehavior="inside">
       <ModalOverlay />
@@ -36,10 +36,13 @@ const TrashModal = ({
           />
         </ModalBody>
         <ModalFooter>
-          <div className="tag-container w-100" style={{ overflow: 'auto' }}>
+          <div className="owner w-100" style={{ overflow: 'auto' }}>
+            <Tooltip label={currentNote.owner && 'Owner: ' +currentNote.owner.displayName + ' ' + currentNote.owner.email}>
+              <Avatar size={'sm'} name={currentNote.owner && currentNote.owner.displayName + ' ' + currentNote.owner.email} />
+            </Tooltip>
           </div>
           <div className="btns d-flex flex-row">
-            <Tooltip label="Archive" placement="top">
+            {/* <Tooltip label="Archive" placement="top">
               <IconButton className="round-btn" colorScheme="orange" variant='ghost' icon={<BiSolidArchiveIn />} onClick={() => {
                 onClose()
                 archiveCurrentNote()
@@ -50,7 +53,7 @@ const TrashModal = ({
                 onClose()
                 restoreCurrentNote()
               }} />
-            </Tooltip>
+            </Tooltip> */}
           </div>
         </ModalFooter>
       </ModalContent>

@@ -19,11 +19,10 @@ const SideNav = () => {
     <div className={`side-nav col-2 d-none d-md-block py-4 ${theme === 'dark' ? 'bg-dark text-white' : 'bg-white'}`}>
       <div className="links pe-1">
         <ul className="list-unstyled">
-          {[['/', 'Notes'], ['/archive', 'Archive'], ['/trash', 'Trash'], ['/profile/'+username, 'Profile']].map(([route, text]) => {
+          {[['/', 'Notes'],['/shared', 'Shared'], ['/archive', 'Archive'], ['/trash', 'Trash'], ['/profile/'+username, 'Profile']].map(([route, text]) => {
             return (
               <Link to={route} onClick={() => {
                 setActive([route, text])
-                console.log(active, route)
               }} key={text}>
                 <p className={`link px-3 py-3 m-0 ${active[0] === route ? 'link-active text-dark' : ''}`}>{text}</p>
               </Link>
