@@ -124,7 +124,7 @@ const NoteModal = ({
             status: 'success',
             message: (!prevAlertState ? 'User found. Added collaborator.' : 'Added collaborator.')
           })
-          getNotes()
+          getNotes('active')
         })
       }
     }

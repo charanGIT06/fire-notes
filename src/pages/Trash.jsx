@@ -1,6 +1,6 @@
 import "../scss/notes.scss";
-import { useState, useEffect } from "react";
-import { collection, doc, getDocs, deleteDoc, setDoc, query } from "firebase/firestore";
+import { useState } from "react";
+import { collection, doc, deleteDoc, setDoc } from "firebase/firestore";
 import firebase from "../js/firebase.js";
 import NotesContainer from "../components/NotesContainer";
 import TrashModal from "../components/modals/TrashModal";
@@ -9,18 +9,17 @@ import SideNav from "../components/SideNav";
 import ThemeState from "../context/ThemeContext";
 import UserAuth from "../context/UserContext";
 import { useDisclosure } from "@chakra-ui/react";
+import NotesState from "../context/NotesContext";
 
 const Trash = () => {
   const db = firebase.db;
   const { user } = UserAuth();
   const { theme } = ThemeState();
 
-
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { searchText } = NavState()
 
-  const [trashNotes, setTrashNotes] = useState([])
-
+  const { getNotes, trashNotes } = NotesState()
 
   const [currentNote, setCurrentNote] = useState({})
 
@@ -35,10 +34,11 @@ const Trash = () => {
       const trashNote = doc(collection(userNotes, 'trash'), currentNote.id)
       await deleteDoc(trashNote)
 
-      const archivedNote = doc(collection(userNotes, 'archived'), currentNote.id)
+      const archivedNote = doc(collection(userNotes, 'archive'), currentNote.id)
       await setDoc(archivedNote, currentNote)
       console.log('note archived')
-      getNotes()
+      getNotes('archive')
+      getNotes('trash')
     } catch (error) {
       console.log(error)
     }
@@ -57,32 +57,12 @@ const Trash = () => {
       await setDoc(activeNote, currentNote)
 
       console.log('note restored from trash')
-      getNotes()
+      getNotes('active')
+      getNotes('trash')
     } catch (error) {
       console.log(error)
     }
   }
-
-  const getNotes = async () => {
-    try {
-      const notes = []
-      const q = query(collection(db, 'notes', user.uid, 'trash'))
-      await getDocs(q).then(
-        (querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            notes.push({ id: doc.id, ...doc.data() })
-          })
-        }
-      )
-      setTrashNotes(notes)
-    } catch (error) {
-      console.log('error', error)
-    }
-  }
-
-  useEffect(() => {
-    getNotes()
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div className={`trash-page ${theme === 'dark' ? 'bg-dark text-white' : 'bg-white'}`}>

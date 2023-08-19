@@ -1,26 +1,28 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react" // eslint-disable-line no-unused-vars
 import NotesContainer from "../components/NotesContainer"
 import SideNav from "../components/SideNav"
 import ThemeState from "../context/ThemeContext"
-import UserAuth from "../context/UserContext"
-import { collection, getDocs } from "firebase/firestore"
-import firebase from "../js/firebase"
+// import UserAuth from "../context/UserContext"
+// import { collection, getDocs } from "firebase/firestore"
+// import firebase from "../js/firebase"
 import NavState from "../context/NavContext"
-import { useDisclosure } from "@chakra-ui/react"
+import { IconButton, useDisclosure, Tooltip } from "@chakra-ui/react"
 import SharedModal from "../components/modals/SharedModal"
-
-
+import NotesState from "../context/NotesContext"
+// import UserAuth from "../context/UserContext"
+import { MdRefresh } from "react-icons/md"
 
 const Shared = () => {
   const { theme } = ThemeState()
-  const { user } = UserAuth()
+  // const { user } = UserAuth()
   const { searchText } = NavState()
 
   // Props
+  // const db = firebase.db
   const { isOpen, onOpen, onClose } = useDisclosure()
-  const db = firebase.db
 
-  const [sharedNotes, setSharedNotes] = useState([])
+  // const [sharedNotes, setSharedNotes] = useState([])
+  const { sharedNotes, getNotes } = NotesState()
 
   const [currentNote, setCurrentNote] = useState({})
 
@@ -62,29 +64,29 @@ const Shared = () => {
   // }
 
 
-  const getNotes = async () => {
-    try {
-      const notes = []
-      console.log('Inside GetNotes')
-      const docRef = collection(db, 'notes', user.uid, 'shared')
-      const docs = await getDocs(docRef)
-      docs.forEach(doc => {
-        notes.push(doc.data())
-      })
+  // const getNotes = async () => {
+  //   try {
+  //     const notes = []
+  //     console.log('Inside GetNotes')
+  //     const docRef = collection(db, 'notes', user.uid, 'shared')
+  //     const docs = await getDocs(docRef)
+  //     docs.forEach(doc => {
+  //       notes.push(doc.data())
+  //     })
 
-      setSharedNotes(notes)
-      // console.log('notes', notes)
-    } catch (error) {
-      // console.log('error', error)
-      null
-    }
-  }
+  //     setSharedNotes(notes)
+  //     // console.log('notes', notes)
+  //   } catch (error) {
+  //     // console.log('error', error)
+  //     null
+  //   }
+  // }
 
-  useEffect(() => {
-    if (user) {
-      getNotes()
-    }
-  }, [user]) // eslint-disable-line react-hooks/exhaustive-deps
+  // useEffect(() => {
+  //   if (user) {
+  //     getNotes()
+  //   }
+  // }, [user]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div className={`notes-page ${theme === 'dark' ? 'bg-dark text-white' : 'bg-white'}`}>
@@ -92,7 +94,12 @@ const Shared = () => {
         <SideNav />
         <div className="main-section col-12 col-md-10 py-3">
           <div className="main-content">
-            <h5 className="ms-3 mb-3">Shared</h5>
+            <div className="header d-flex align-items-center mb-3">
+              <h5 className="ms-3 w-100">Shared</h5>
+              <Tooltip title="Refresh" placement="bottom">
+                <IconButton icon={<MdRefresh />} className="me-3" isRound={true} onClick={() => getNotes('shared')} />
+              </Tooltip>
+            </div>
             <NotesContainer notes={sharedNotes} searchText={searchText} setModalData={setModalData} onOpen={onOpen} />
           </div>
         </div>

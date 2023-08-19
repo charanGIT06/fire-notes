@@ -12,13 +12,12 @@ import ThemeState from '../context/ThemeContext';
 import NavState from '../context/NavContext';
 
 const Profile = () => {
-  const auth = getAuth();
   const db = firebase.db;
+  const auth = getAuth();
   const navigate = useNavigate();
   const { userId } = useParams();
   const { theme } = ThemeState();
   const { setActive } = NavState();
-
   const { user, setUser } = UserAuth();
   const [edit, setEdit] = useState(false);
   const { profile, setProfile, setProfileDetails } = UserAuth();
@@ -46,17 +45,17 @@ const Profile = () => {
   }
 
   // const getProfileDetails = async () => {
-  const usersRef = collection(db, "users");
-  const q = query(usersRef, where("username", "==", userId));
-  onSnapshot(q, (querySnapshot) => {
-    querySnapshot.forEach((doc) => {
-      const data = doc.data();
-      setUsername(data.username);
-      setFirstName(data.profile.firstName);
-      setLastName(data.profile.lastName);
-      setEmail(data.email);
-    });
-  });
+  //   const usersRef = collection(db, "users");
+  //   const q = query(usersRef, where("username", "==", userId));
+  //   onSnapshot(q, (querySnapshot) => {
+  //     querySnapshot.forEach((doc) => {
+  //       const data = doc.data();
+  //       setUsername(data.username);
+  //       setFirstName(data.profile.firstName);
+  //       setLastName(data.profile.lastName);
+  //       setEmail(data.email);
+  //     });
+  //   });
   // }
 
   useEffect(() => {
@@ -172,8 +171,8 @@ const Profile = () => {
                   <CardBody>
                     <div className="section-3 px-3 pt-2">
                       <div className="btn-container">
-                        <Button variant='solid' className='me-2'>Change Password</Button>
-                        <Button variant='solid' className='mt-2 mt-md-0' colorScheme='red' onClick={() => {
+                        <Button variant='solid' className='me-2 mb-2'>Change Password</Button>
+                        <Button variant='solid' className='mb-2' colorScheme='red' onClick={() => {
                           signOut(auth).then(() => {
                             setUser({})
                             setProfile({})

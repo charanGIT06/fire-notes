@@ -20,7 +20,7 @@ const NotesContainer = ({ notes, searchText, setModalData, onOpen }) => {
 			<div className="row d-flex flex-row">
 				{
 					notes.filter((note) => {
-						if (note.title.toLowerCase().includes(searchText.toLowerCase())) {
+						if (note.title.toLowerCase().includes(searchText.toLowerCase()) || note.content.toLowerCase().includes(searchText.toLowerCase())) {
 							return note
 						}
 						return null
