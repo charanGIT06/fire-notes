@@ -6,7 +6,7 @@ import ThemeState from "../context/ThemeContext"
 // import { collection, getDocs } from "firebase/firestore"
 // import firebase from "../js/firebase"
 import NavState from "../context/NavContext"
-import { IconButton, useDisclosure } from "@chakra-ui/react"
+import { IconButton, useDisclosure, Tooltip } from "@chakra-ui/react"
 import SharedModal from "../components/modals/SharedModal"
 import NotesState from "../context/NotesContext"
 // import UserAuth from "../context/UserContext"
@@ -96,7 +96,9 @@ const Shared = () => {
           <div className="main-content">
             <div className="header d-flex align-items-center mb-3">
               <h5 className="ms-3 w-100">Shared</h5>
-              <IconButton icon={<MdRefresh/>} className="me-3" isRound={true} onClick={() => getNotes('shared')}/>
+              <Tooltip title="Refresh" placement="bottom">
+                <IconButton icon={<MdRefresh />} className="me-3" isRound={true} onClick={() => getNotes('shared')} />
+              </Tooltip>
             </div>
             <NotesContainer notes={sharedNotes} searchText={searchText} setModalData={setModalData} onOpen={onOpen} />
           </div>
