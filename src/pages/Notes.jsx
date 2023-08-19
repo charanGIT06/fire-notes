@@ -2,14 +2,15 @@ import SideNav from '../components/SideNav'
 import {
 	Input, Textarea, Tooltip, useDisclosure, Button,
 } from "@chakra-ui/react";
-import { useState, useEffect } from "react";
-import { collection, doc, getDocs, query, addDoc, updateDoc, deleteDoc, setDoc, serverTimestamp } from "firebase/firestore";
+import { useState } from "react";
+import { collection, doc, addDoc, updateDoc, deleteDoc, setDoc, serverTimestamp } from "firebase/firestore";
 import firebase from "../js/firebase.js";
 import NotesContainer from "../components/NotesContainer";
 import NavState from '../context/NavContext';
 import UserAuth from '../context/UserContext';
 import NoteModal from '../components/modals/NoteModal';
 import ThemeState from '../context/ThemeContext';
+import NotesState from '../context/NotesContext';
 
 const Notes = () => {
 	// Firestore Credentials
@@ -24,7 +25,8 @@ const Notes = () => {
 	const { isOpen, onOpen, onClose } = useDisclosure()
 
 	// Notes
-	const [notes, setNotes] = useState([])
+	// const [notes, setNotes] = useState([])
+	const { activeNotes, getNotes } = NotesState()
 
 	// Current Note
 	const [currentNote, setCurrentNote] = useState({})
@@ -52,7 +54,7 @@ const Notes = () => {
 				setCurrentNoteChanged(false)
 
 				onClose()
-				getNotes()
+				getNotes('active')
 			} catch (error) {
 				console.log(error)
 			}
@@ -65,12 +67,12 @@ const Notes = () => {
 			const activeNoteRef = doc(collection(userNotesRef, 'active'), currentNote.id)
 			await deleteDoc(activeNoteRef)
 
-			const archivedNote = doc(collection(userNotesRef, 'archived'), currentNote.id)
+			const archivedNote = doc(collection(userNotesRef, 'archive'), currentNote.id)
 			await setDoc(archivedNote, currentNote)
 			console.log('note archived')
 			onClose()
-			getNotes()
-
+			getNotes('active')
+			getNotes('archive')
 		} catch (error) {
 			console.log(error)
 		}
@@ -88,7 +90,8 @@ const Notes = () => {
 
 			console.log('note deleted')
 			onClose()
-			getNotes()
+			getNotes('active')
+			getNotes('trash')
 		} catch (error) {
 			console.log(error)
 		}
@@ -113,7 +116,7 @@ const Notes = () => {
 					setNewNoteChanged(false)
 					document.getElementById('title-input').value = ''
 					document.getElementById('content-input').value = ''
-					getNotes()
+					getNotes('active')
 					console.log('Note added!')
 				})
 			} catch (error) {
@@ -121,32 +124,6 @@ const Notes = () => {
 			}
 		}
 	}
-
-	const getNotes = async () => {
-		try {
-			const notes = []
-			const q = query(collection(db, 'notes', user.uid, 'active'))
-			await getDocs(q).then(
-				(querySnapshot) => {
-					querySnapshot.forEach((doc) => {
-						notes.push({ id: doc.id, ...doc.data() })
-					})
-				}
-			)
-
-			setNotes(notes)
-			// console.log('notes', notes)
-		} catch (error) {
-			// console.log('error', error)
-			null
-		}
-	}
-
-	useEffect(() => {
-		if (user) {
-			getNotes()
-		}
-	}, [user]) // eslint-disable-line react-hooks/exhaustive-deps
 
 	return (
 		<div className={`notes-page ${theme === 'dark' ? 'bg-dark text-white' : 'bg-white'}`}>
@@ -197,7 +174,7 @@ const Notes = () => {
 								</div>
 							</div>
 						</div>
-						<NotesContainer notes={notes} searchText={searchText} setModalData={setModalData} onOpen={onOpen} />
+						<NotesContainer notes={activeNotes} searchText={searchText} setModalData={setModalData} onOpen={onOpen} />
 					</div>
 				</div>
 				<div className="note-modal" onKeyUp={(e) => { if (e.key === 'Escape') { updateNote() } }}>

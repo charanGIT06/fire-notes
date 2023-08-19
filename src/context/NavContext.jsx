@@ -1,6 +1,5 @@
 import propTypes from "prop-types";
-import { useContext } from "react";
-import { createContext, useState } from "react";
+import { useContext, createContext, useState } from "react";
 
 const NavContext = createContext();
 

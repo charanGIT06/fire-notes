@@ -60,7 +60,7 @@ export function UserProvider({ children }) {
       const usersRef = collection(db, "users");
       const newUserRef = doc(usersRef, user.uid);
       setDoc(newUserRef, {
-        uid:user.uid,
+        uid: user.uid,
         username: username,
         email: email,
         password: password,
@@ -144,6 +144,31 @@ export function UserProvider({ children }) {
         const user = result.user;
         navigate('/');
         setUser(user);
+
+        const usersRef = collection(db, "users");
+        const newUserRef = doc(usersRef, user.uid);
+        console.log(user)
+        setDoc(newUserRef, {
+          uid: user.uid,
+          username: user.displayName,
+          email: user.email,
+          // password: password,
+          profile: {
+            firstName: user.firstName || "",
+            lastName: user.lastName || '',
+          }
+        }).then(() => {
+          setProfile(
+            {
+              uid: user.uid,
+              displayName: user.displayName,
+              firstName: user.firstName || '',
+              lastName: user.lastName || '',
+              email: user.email,
+            }
+          )
+          console.log("User Added!");
+        })
       });
     } catch (error) {
       console.log(error);
@@ -155,6 +180,7 @@ export function UserProvider({ children }) {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser)
     });
+
 
     return () => {
       unsubscribe();
