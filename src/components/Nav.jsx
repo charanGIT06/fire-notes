@@ -16,11 +16,12 @@ const Nav = () => {
   const { user } = UserState()
   const navigate = useNavigate()
   const location = useLocation()
+  console.log(user  );
 
   return (
     <>
       <div className={`${isMobile ? 'd-none' : 'd-block'} nav d-flex flex-row align-items-center justify-content-center shadow-sm p-3 w-100 ${theme === 'dark' ? 'bg-dark text-white' : 'bg-white'}`}>
-        <Link to={user ? '/' : '/login'} className="branding p-0 m-0 w-25">
+        <Link to={user !== {} ? '/' : '/login'} className="branding p-0 m-0 w-25">
           <h6 className="p-0 m-0">🔥Fire Notes</h6>
         </Link>
         <div className="searchbar w-50">
