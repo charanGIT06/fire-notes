@@ -6,21 +6,20 @@ import UserAuth from '../context/UserContext';
 import { collection, onSnapshot, query, updateDoc, where } from 'firebase/firestore';
 import { getAuth, signOut } from 'firebase/auth';
 import firebase from '../js/firebase.js';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { BsUpload } from 'react-icons/bs';
 import ThemeState from '../context/ThemeContext';
-import NavState from '../context/NavContext';
+import NotesState from '../context/NotesContext';
 
 const Profile = () => {
   const db = firebase.db;
   const auth = getAuth();
   const navigate = useNavigate();
-  const { userId } = useParams();
   const { theme } = ThemeState();
-  const { setActive } = NavState();
   const { user, setUser } = UserAuth();
   const [edit, setEdit] = useState(false);
   const { profile, setProfile, setProfileDetails } = UserAuth();
+  const { setActiveNotes, setArchiveNotes, setTrashNotes, setSharedNotes } = NotesState();
 
   const [username, setUsername] = useState('');
   const [firstName, setFirstName] = useState('');
@@ -29,7 +28,7 @@ const Profile = () => {
   const [location, setLocation] = useState('');
 
   const updateProfileDetails = () => {
-    const q = query(collection(db, "users"), where("username", "==", userId));
+    const q = query(collection(db, "users"), where("username", "==", user.uid));
     onSnapshot(q, (querySnapshot) => {
       querySnapshot.forEach(async (doc) => {
         await updateDoc(doc.ref, {
@@ -58,6 +57,16 @@ const Profile = () => {
   //   });
   // }
 
+  const handleSignOut = () => {
+    setUser({})
+    setProfile({})
+    setActiveNotes([])
+    setArchiveNotes([])
+    setTrashNotes([])
+    setSharedNotes([])
+    navigate('/login');
+  }
+
   useEffect(() => {
     if (!profile) {
       // console.log('Setting profile')
@@ -70,7 +79,6 @@ const Profile = () => {
       setEmail(profile.email)
       setLocation(profile.location)
     }
-    setActive('profile')
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
@@ -174,9 +182,7 @@ const Profile = () => {
                         <Button variant='solid' className='me-2 mb-2'>Change Password</Button>
                         <Button variant='solid' className='mb-2' colorScheme='red' onClick={() => {
                           signOut(auth).then(() => {
-                            setUser({})
-                            setProfile({})
-                            navigate('/login');
+                            handleSignOut();
                           }).catch((error) => {
                             console.log(error);
                           });

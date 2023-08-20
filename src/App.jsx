@@ -34,7 +34,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                     <Route path="/archive" element={<ProtectedRoute><Archive /></ProtectedRoute>} />
                     <Route path="/trash" element={<ProtectedRoute><Trash /></ProtectedRoute>} />
                     <Route path="/shared" element={<ProtectedRoute><Shared /></ProtectedRoute>} />
-                    <Route path="/profile/:userId" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+                    <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
                     {/* <Route path="/test" element={<Test />} /> */}
                   </Routes>
                 </div>
