@@ -20,11 +20,6 @@ const Nav = () => {
   return (
     <>
       <div className={`${isMobile ? 'd-none' : 'd-block'} nav d-flex flex-row align-items-center justify-content-center shadow-sm p-3 w-100 ${theme === 'dark' ? 'bg-dark text-white' : 'bg-white'}`}>
-        {/*
-      <div className="drawer-button d-block d-md-none d-flex flex-row align-items-center me-3">
-        <GiHamburgerMenu className='nav-icon' onClick={() => { onOpen() }} />
-      </div>
-      */}
         <Link to={user ? '/' : '/login'} className="branding p-0 m-0 w-25">
           <h6 className="p-0 m-0">🔥Fire Notes</h6>
         </Link>
