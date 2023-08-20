@@ -39,12 +39,12 @@ export function UserProvider({ children }) {
     });
   }
 
-  const createUser = async (username, firstName, lastName, email, password) => {
-    console.log(username, firstName, lastName, email, password)
+  const createUser = async (displayName, firstName, lastName, email, password) => {
+    console.log(displayName, firstName, lastName, email, password)
     await createUserWithEmailAndPassword(auth, email, password).then((userCredential) => {
       const user = userCredential.user;
       updateProfile(user, {
-        displayName: username,
+        displayName: displayName,
       });
       setUser(user)
       console.log(profile)
@@ -52,7 +52,7 @@ export function UserProvider({ children }) {
       const newUsernameRef = doc(usernamesRef, user.uid);
       setDoc(newUsernameRef, {
         uid: user.uid,
-        displayName: username
+        displayName: displayName
       }).then(() => {
         console.log("Username Added!");
       });
@@ -61,7 +61,7 @@ export function UserProvider({ children }) {
       const newUserRef = doc(usersRef, user.uid);
       setDoc(newUserRef, {
         uid: user.uid,
-        username: username,
+        displayName: displayName,
         email: email,
         password: password,
         profile: {
@@ -72,7 +72,7 @@ export function UserProvider({ children }) {
         setProfile(
           {
             uid: user.uid,
-            displayName: username,
+            displayName: displayName,
             firstName: firstName,
             lastName: lastName,
             email: email,
