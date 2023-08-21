@@ -7,6 +7,7 @@ import { collection, doc, getDocs, query, setDoc, updateDoc, where } from 'fireb
 import UserAuth from '../../context/UserContext';
 import firebase from '../../js/firebase';
 import { useRef, useState } from 'react';
+import { isMobile } from 'react-device-detect';
 
 const NoteModal = ({
   isOpen,
@@ -139,7 +140,7 @@ const NoteModal = ({
 
   return (
     <div className='note-modal'>
-      <Modal isOpen={isOpen} onClose={onClose} isCentered motionPreset="slideInBottom" size='xl' scrollBehavior="inside">
+      <Modal isOpen={isOpen} onClose={onClose} isCentered motionPreset="slideInBottom" size={isMobile ? 'full' : 'xl'} scrollBehavior="inside">
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>

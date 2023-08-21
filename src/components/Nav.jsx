@@ -7,7 +7,7 @@ import { SearchIcon } from "@chakra-ui/icons"
 import ThemeState from "../context/ThemeContext";
 import { MdDarkMode, MdLightMode } from "react-icons/md";
 import { useLocation } from "react-router-dom"
-import { isMobile } from "react-device-detect";
+import { useEffect, useState } from "react";
 
 const Nav = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -16,11 +16,68 @@ const Nav = () => {
   const { user } = UserState()
   const navigate = useNavigate()
   const location = useLocation()
-  console.log(user  );
+  const [searchBarActive, setSearchBarActive] = useState(false)
+  const [themeColor, setThemeColor] = useState(theme === 'dark' ? 'white' : 'black')
+
+  useEffect(() => {
+    setThemeColor(theme === 'dark' ? 'white' : 'lightGray')
+  }, [theme])
 
   return (
     <>
-      <div className={`${isMobile ? 'd-none' : 'd-block'} nav d-flex flex-row align-items-center justify-content-center shadow-sm p-3 w-100 ${theme === 'dark' ? 'bg-dark text-white' : 'bg-white'}`}>
+      <div className={`nav ${theme === 'dark' ? 'bg-dark text-white' : 'bg-white'}`}>
+        <div className="big-screens d-none d-md-block w-100 p-2">
+          <div className="d-flex flex-row align-items-center w-100 py-3">
+            <Link to={user !== {} ? '/' : '/login'} className="w-25">🔥Fire Notes</Link>
+            <div className="searchbar w-50 d-flex flex-row align-items-center p-2" style={{ border: `2px solid ${searchBarActive ? '#feae3b' : themeColor}`, borderRadius: '25px' }}>
+              <SearchIcon color='grey' className="mx-2" />
+              <Input type="text" variant='unstyled' onFocus={() => setSearchBarActive(true)} placeholder="Search" onChange={(e) => {
+                setSearchText(e.target.value)
+                if (e.target.value !== '') {
+                  setSearchBarActive(true)
+                } else {
+                  setSearchBarActive(false)
+                }
+                console.log(searchBarActive)
+              }} />
+            </div>
+            <div className="account w-25 d-flex flex-row justify-content-end">
+              <p className="my-0 me-2">{user && user.displayName}</p>
+              <Avatar name={user && user.displayName} size='sm' onClick={() => {
+                if (user !== {}) {
+                  navigate('/profile')
+                } else {
+                  navigate('/login')
+                }
+              }} />
+            </div>
+          </div>
+        </div>
+        <div className="mobile d-block d-md-none px-3 pt-3 w-100">
+          <div className="search-bar d-flex flex-row align-items-center w-100 p-2" style={{ border: `2px solid ${searchBarActive ? '#feae3b' : themeColor }`, borderRadius: '25px' }}>
+            <GiHamburgerMenu className='nav-icon ms-2' size='1.5rem' color="grey" onClick={() => { onOpen() }} />
+            <Input type="text" variant='unstyled' className="mx-3" onFocus={() => setSearchBarActive(true)} placeholder="Search" onChange={(e) => {
+              setSearchText(e.target.value)
+              if (e.target.value !== '') {
+                setSearchBarActive(true)
+              } else {
+                setSearchBarActive(false)
+              }
+            }} />
+            < Avatar name={user && user.displayName
+            } size='sm' onClick={
+              () => {
+                if (user) {
+                  navigate('/profile')
+                } else {
+                  navigate('/login')
+                }
+              }
+            } />
+          </div>
+        </div>
+      </div>
+      {/* <div className={`${isMobile ? 'd-none' : 'd-block'} nav d-flex flex-row align-items-center justify-content-center shadow-sm p-3 w-100 ${theme === 'dark' ? 'bg-dark text-white' : 'bg-white'}`}>
         <Link to={user !== {} ? '/' : '/login'} className="branding p-0 m-0 w-25">
           <h6 className="p-0 m-0">🔥Fire Notes</h6>
         </Link>
@@ -48,7 +105,6 @@ const Nav = () => {
         </div>
       </div >
       <div className={`nav d-flex flex-column justify-content-center align-items-center ${isMobile ? 'd-block' : 'd-none'} ${theme === 'dark' ? 'bg-dark text-white' : 'bg-white'}`}>
-        {/* <h4 >🔥Fire Notes</h4> */}
         <div className={`search-container px-2 ${isMobile ? 'd-block' : 'd-none'}`}>
           <div className="search-bar d-flex flex-row align-items-center w-100 p-2" style={{ border: `1px solid white`, borderRadius: '25px' }}>
             <GiHamburgerMenu className='nav-icon ms-2' size='1.35rem' onClick={() => { onOpen() }} />
@@ -64,7 +120,7 @@ const Nav = () => {
             } />
           </div>
         </div>
-      </div>
+      </div> */}
       <Drawer placement={'left'} onClose={onClose} isOpen={isOpen} className='bg-dark' >
         <DrawerOverlay />
         <DrawerContent>
