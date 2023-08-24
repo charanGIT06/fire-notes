@@ -16,11 +16,10 @@ const Nav = () => {
   const { user } = UserState()
   const navigate = useNavigate()
   const location = useLocation()
-  const [searchBarActive, setSearchBarActive] = useState(false)
-  const [themeColor, setThemeColor] = useState(theme === 'dark' ? 'white' : 'black')
+  const [themeColor, setThemeColor] = useState(theme === 'dark' ? 'gray' : 'black')
 
   useEffect(() => {
-    setThemeColor(theme === 'dark' ? 'white' : 'lightGray')
+    setThemeColor(theme === 'dark' ? 'gray' : 'lightGray')
   }, [theme])
 
   return (
@@ -29,16 +28,10 @@ const Nav = () => {
         <div className="big-screens d-none d-md-block w-100 p-2">
           <div className="d-flex flex-row align-items-center w-100 py-3 px-3">
             <Link to={user !== {} ? '/' : '/login'} className="w-25">🔥Fire Notes</Link>
-            <div className="searchbar w-50 d-flex flex-row align-items-center p-2" style={{ border: `2px solid ${searchBarActive ? '#feae3b' : themeColor}`, borderRadius: '25px' }}>
+            <div className="searchbar w-50 d-flex flex-row align-items-center p-2" style={{ border: `2px solid ${themeColor}`, borderRadius: '25px' }}>
               <SearchIcon color='grey' className="mx-2" />
-              <Input type="text" variant='unstyled' onFocus={() => setSearchBarActive(true)} placeholder="Search" onChange={(e) => {
+              <Input type="text" variant='unstyled' placeholder="Search" onChange={(e) => {
                 setSearchText(e.target.value)
-                if (e.target.value !== '') {
-                  setSearchBarActive(true)
-                } else {
-                  setSearchBarActive(false)
-                }
-                console.log(searchBarActive)
               }} />
             </div>
             <div className="account w-25 d-flex flex-row justify-content-end align-items-center" style={{ cursor: 'pointer' }} onClick={() => {
@@ -54,15 +47,10 @@ const Nav = () => {
           </div>
         </div>
         <div className="mobile d-block d-md-none px-3 pt-3 w-100">
-          <div className="search-bar d-flex flex-row align-items-center w-100 p-2" style={{ border: `2px solid ${searchBarActive ? '#feae3b' : themeColor}`, borderRadius: '25px' }}>
+          <div className="search-bar d-flex flex-row align-items-center w-100 p-2" style={{ border: `2px solid ${themeColor}`, borderRadius: '25px' }}>
             <GiHamburgerMenu className='nav-icon ms-2' size='1.5rem' color="grey" onClick={() => { onOpen() }} />
-            <Input type="text" variant='unstyled' className="mx-3" onFocus={() => setSearchBarActive(true)} placeholder="Search" onChange={(e) => {
+            <Input type="text" variant='unstyled' className="mx-3" placeholder="Search" onChange={(e) => {
               setSearchText(e.target.value)
-              if (e.target.value !== '') {
-                setSearchBarActive(true)
-              } else {
-                setSearchBarActive(false)
-              }
             }} />
             < Avatar name={user && user.displayName
             } size='sm' onClick={

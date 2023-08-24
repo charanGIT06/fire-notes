@@ -1,10 +1,7 @@
 {
   "name": "Fire Notes",
-  "short_name": "Fire Notes",
-  "start_url": ".",
+  "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#fff",
-  "description": "A notes app.",
   "icons": [
     {
       "src": "/src/assets/fire-48.png",

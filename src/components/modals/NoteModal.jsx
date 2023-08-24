@@ -1,4 +1,4 @@
-import { Avatar, Button, CloseButton, IconButton, Input, Modal, ModalContent, ModalOverlay, Textarea, Tooltip } from '@chakra-ui/react';
+import { Avatar, Button, IconButton, Input, Modal, ModalContent, ModalOverlay, Textarea, Tooltip } from '@chakra-ui/react';
 import { BsFillArchiveFill, BsFillPersonPlusFill, BsPinFill } from 'react-icons/bs';
 import propsTypes from 'prop-types';
 import CollaboratorPopover from '../popovers/CollaboratorPopover';
@@ -8,6 +8,7 @@ import firebase from '../../js/firebase';
 import { useRef, useState } from 'react';
 import { isMobile } from 'react-device-detect';
 import { BiSolidTrashAlt } from 'react-icons/bi';
+import { CloseIcon } from '@chakra-ui/icons';
 
 const NoteModal = ({
   isOpen,
@@ -150,10 +151,7 @@ const NoteModal = ({
 
   return (
     <div className='note-modal'>
-      <Modal isOpen={isOpen} onClose={onClose} isCentered motionPreset="slideInBottom" size={modalSize} scrollBehavior="inside" style={{ borderRadius: '25px' }} onFocus={() => {
-        modalText.current.style.height = `${modalText.current.scrollHeight}` + 'px';
-        console.log(modalText.current.style.height)
-      }}>
+      <Modal isOpen={isOpen} onClose={onClose} isCentered motionPreset="slideInBottom" size={modalSize} scrollBehavior="inside" style={{ borderRadius: '25px' }}>
         <ModalOverlay />
         <ModalContent >
           <div className={`note-modal-content bg-dark text-white ${modalSize === 'full' ? 'mobile-modal' : 'desktop-modal'}`} style={{ height: '100%' }}>
@@ -173,10 +171,11 @@ const NoteModal = ({
                   onFocus={() => setModalHeight()}
                 />
               </div>
-              <IconButton variant='ghost' color='gray.500' className="round-btn ms-3" icon={<CloseButton />} onClick={() => onClose()} />
+              <IconButton variant='ghost' isRound={true} color='gray.500' className="round-btn ms-3" icon={<CloseIcon />} onClick={() => onClose()} />
             </div>
             <div className="note-modal-body px-4">
               <Textarea
+                id='note-content'
                 ref={modalText}
                 isReadOnly={true}
                 onClick={(e) => {

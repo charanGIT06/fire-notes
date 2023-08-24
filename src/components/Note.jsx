@@ -12,7 +12,7 @@ const Note = ({ note }) => {
 	return (
 		<div className='card notecard'>
 			<Card size="md" style={theme === 'dark' ? {
-				border: '1px solid #e2e8f0',
+				border: '1px solid grey',
 			} : {}} className={`notecard ${theme === 'dark' ? 'bg-dark text-white' : 'bg-white'}`}>
 				<CardHeader className="ncard-header pt-3 pb-1">
 					<Heading size="md" noOfLines={1}>{note.title}</Heading>
@@ -23,13 +23,6 @@ const Note = ({ note }) => {
 					</Text>
 				</CardBody>
 				<CardFooter className="ncard-footer py-0 d-flex flex-row align-items-center">
-					{/* {note.collaborators.length > 0 ? (
-						note.collaborators.map((user) => {
-							<p>{user.email}</p>
-						})
-					) : (
-						<p>None</p>
-					) } */}
 				</CardFooter>
 			</Card>
 		</div>
