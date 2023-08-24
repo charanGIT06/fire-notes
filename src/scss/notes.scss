@@ -67,27 +67,28 @@
 }
 
 .mobile-modal {
-  min-height: 100vh;
+  height: 70vh;
   .note-modal-header {
     height: 15vh;
   }
   .note-modal-body {
-    height: 75vh;
+    height: 70vh;
+    overflow-y: auto;
   }
   .note-modal-footer {
     height: 15vh;
   }
 }
 .desktop-modal{
-  max-height: 100vh;
+  height: 100vh;
   .note-modal-header {
-    height: 10vh;
+    height: 15vh;
   }
   .note-modal-body {
-    max-height: 60vh;
+    height: 50vh;
     overflow-y: auto;
   }
   .note-modal-footer {
-    height: 10vh;
+    height: 15vh;
   }
 }

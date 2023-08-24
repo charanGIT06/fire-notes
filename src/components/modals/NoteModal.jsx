@@ -1,6 +1,5 @@
-import { DeleteIcon } from '@chakra-ui/icons';
-import { Avatar, Button, IconButton, Input, Modal, ModalCloseButton, ModalContent, ModalOverlay, Textarea, Tooltip } from '@chakra-ui/react';
-import { BsFillArchiveFill, BsFillPersonPlusFill, BsPinFill } from 'react-icons/bs'; //eslint-disable-line
+import { Avatar, Button, CloseButton, IconButton, Input, Modal, ModalContent, ModalOverlay, Textarea, Tooltip } from '@chakra-ui/react';
+import { BsFillArchiveFill, BsFillPersonPlusFill, BsPinFill } from 'react-icons/bs';
 import propsTypes from 'prop-types';
 import CollaboratorPopover from '../popovers/CollaboratorPopover';
 import { collection, doc, getDocs, query, setDoc, updateDoc, where } from 'firebase/firestore';
@@ -8,6 +7,7 @@ import UserAuth from '../../context/UserContext';
 import firebase from '../../js/firebase';
 import { useRef, useState } from 'react';
 import { isMobile } from 'react-device-detect';
+import { BiSolidTrashAlt } from 'react-icons/bi';
 
 const NoteModal = ({
   isOpen,
@@ -150,17 +150,15 @@ const NoteModal = ({
 
   return (
     <div className='note-modal'>
-      <Modal onEsc={() => {
-        console.log('esc')
-      }} isOpen={isOpen} onClose={onClose} isCentered motionPreset="slideInBottom" size={modalSize} scrollBehavior="inside" style={{ borderRadius: '25px' }} onFocus={() => {
+      <Modal isOpen={isOpen} onClose={onClose} isCentered motionPreset="slideInBottom" size={modalSize} scrollBehavior="inside" style={{ borderRadius: '25px' }} onFocus={() => {
         modalText.current.style.height = `${modalText.current.scrollHeight}` + 'px';
         console.log(modalText.current.style.height)
       }}>
         <ModalOverlay />
         <ModalContent >
           <div className={`note-modal-content bg-dark text-white ${modalSize === 'full' ? 'mobile-modal' : 'desktop-modal'}`} style={{ height: '100%' }}>
-            <div className="note-modal-header">
-              <div className="notes-heading px-4 pt-5">
+            <div className="note-modal-header d-flex p-4">
+              <div className="notes-heading w-100">
                 <Input id='title-input' style={{ fontSize: '20px', fontWeight: '600' }} type="text" defaultValue={currentNote.title} placeholder="Title" variant='unstyled'
                   onChange={(e) => {
                     if (!currentNoteChanged) {
@@ -168,16 +166,23 @@ const NoteModal = ({
                     }
                     setCurrentNote({ ...currentNote, title: e.target.value });
                   }}
+                  isReadOnly={true}
+                  onClick={(e) => {
+                    e.target.readOnly = false
+                  }}
                   onFocus={() => setModalHeight()}
                 />
               </div>
-              <ModalCloseButton />
+              <IconButton variant='ghost' color='gray.500' className="round-btn ms-3" icon={<CloseButton />} onClick={() => onClose()} />
             </div>
-            <div className="note-modal-body px-4 my-3">
+            <div className="note-modal-body px-4">
               <Textarea
-                id='text-area'
                 ref={modalText}
-                className={`text-area mb-4`} placeholder="Take a note..."
+                isReadOnly={true}
+                onClick={(e) => {
+                  e.target.readOnly = false
+                }}
+                className={`text-area`} placeholder="Take a note..."
                 rows='1' size='md' height={50} variant='unstyled'
                 defaultValue={currentNote.content}
                 onFocus={(e) => {
@@ -197,7 +202,7 @@ const NoteModal = ({
                 }}
               />
             </div>
-            <div className="note-modal-footer px-4">
+            <div className="note-modal-footer px-4 d-flex flex-column justify-content-center">
               <div className="collaborators d-flex flex-row align-items-center mb-2 ps-2 w-100">
                 {currentNote.collaborators && currentNote.collaborators.map((collaborator, index) => {
                   return (
@@ -210,21 +215,21 @@ const NoteModal = ({
               <div className="btns d-flex flex-row align-items-start justify-content-start w-100 mt-2">
                 <div className="left w-100">
                   <Tooltip label='Pin' placement="top" hasArrow='true'>
-                    <IconButton className="round-btn" color='gray.500' variant='ghost' icon={<BsPinFill />} />
+                    <IconButton className="me-1" color='gray.500' isRound={true} variant='ghost' size={'lg'} icon={<BsPinFill size={'22px'} />} />
                   </Tooltip>
                   <Tooltip label="Archive" placement="top" hasArrow='true'>
-                    <IconButton className="round-btn" color='gray.500' variant='ghost' icon={<BsFillArchiveFill />} onClick={() => {
+                    <IconButton className='me-1' isRound={true} color='gray.500' variant='ghost' size={'lg'} icon={<BsFillArchiveFill size={'22px'} />} onClick={() => {
                       archiveNote()
                     }} />
                   </Tooltip>
                   <Tooltip label="Delete" placement="top" hasArrow='true'>
-                    <IconButton variant='ghost' color='gray.500' className="round-btn" icon={<DeleteIcon />} onClick={() => {
+                    <IconButton variant='ghost' size={'lg'} isRound={true} color='gray.500' className="me-1" icon={<BiSolidTrashAlt size={'22px'} />} onClick={() => {
                       deleteNote()
                     }} />
                   </Tooltip>
                   <CollaboratorPopover
                     trigger={
-                      <IconButton className="round-btn" color='gray.500' variant='ghost' icon={<BsFillPersonPlusFill />} />
+                      <IconButton className="me-1" color='gray.500' variant='ghost' size={'lg'} isRound={true} icon={<BsFillPersonPlusFill size={'25px'} />} />
                     }
                     header={<h4>Collaborators</h4>}
 
@@ -238,9 +243,8 @@ const NoteModal = ({
                     alert={alert}
                   />
                 </div>
-                <Button onClick={() => {
-                  updateNote()
-                }}>
+                <Button colorScheme='gray' onClick={() => updateNote()
+                }>
                   Save
                 </Button>
               </div>
