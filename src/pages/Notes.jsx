@@ -139,7 +139,7 @@ const Notes = () => {
 											addNote()
 										}
 									}}>
-										<Input autoFocus={true} id='title-input' type="text" placeholder={`${(newNoteChanged) ? 'Title' : "Take a note..."}`} variant='flushed' focusBorderColor="yellow.400" onChange={(e) => {
+										<Input id='title-input' type="text" placeholder={`${(newNoteChanged) ? 'Title' : "Take a note..."}`} variant='flushed' focusBorderColor="yellow.400" onChange={(e) => {
 											if (!newNoteChanged) {
 												setNewNoteChanged(true)
 											}

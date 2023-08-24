@@ -27,7 +27,7 @@ const Nav = () => {
     <>
       <div className={`nav ${theme === 'dark' ? 'bg-dark text-white' : 'bg-white'}`}>
         <div className="big-screens d-none d-md-block w-100 p-2">
-          <div className="d-flex flex-row align-items-center w-100 py-3">
+          <div className="d-flex flex-row align-items-center w-100 py-3 px-3">
             <Link to={user !== {} ? '/' : '/login'} className="w-25">🔥Fire Notes</Link>
             <div className="searchbar w-50 d-flex flex-row align-items-center p-2" style={{ border: `2px solid ${searchBarActive ? '#feae3b' : themeColor}`, borderRadius: '25px' }}>
               <SearchIcon color='grey' className="mx-2" />
@@ -41,20 +41,20 @@ const Nav = () => {
                 console.log(searchBarActive)
               }} />
             </div>
-            <div className="account w-25 d-flex flex-row justify-content-end">
+            <div className="account w-25 d-flex flex-row justify-content-end align-items-center" style={{ cursor: 'pointer' }} onClick={() => {
+              if (user !== {}) {
+                navigate('/profile')
+              } else {
+                navigate('/login')
+              }
+            }}>
               <p className="my-0 me-2">{user && user.displayName}</p>
-              <Avatar name={user && user.displayName} size='sm' onClick={() => {
-                if (user !== {}) {
-                  navigate('/profile')
-                } else {
-                  navigate('/login')
-                }
-              }} />
+              <Avatar name={user && user.displayName} size='sm' />
             </div>
           </div>
         </div>
         <div className="mobile d-block d-md-none px-3 pt-3 w-100">
-          <div className="search-bar d-flex flex-row align-items-center w-100 p-2" style={{ border: `2px solid ${searchBarActive ? '#feae3b' : themeColor }`, borderRadius: '25px' }}>
+          <div className="search-bar d-flex flex-row align-items-center w-100 p-2" style={{ border: `2px solid ${searchBarActive ? '#feae3b' : themeColor}`, borderRadius: '25px' }}>
             <GiHamburgerMenu className='nav-icon ms-2' size='1.5rem' color="grey" onClick={() => { onOpen() }} />
             <Input type="text" variant='unstyled' className="mx-3" onFocus={() => setSearchBarActive(true)} placeholder="Search" onChange={(e) => {
               setSearchText(e.target.value)

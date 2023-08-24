@@ -65,3 +65,29 @@
 .new-note-container {
   border-radius: 20px;
 }
+
+.mobile-modal {
+  min-height: 100vh;
+  .note-modal-header {
+    height: 15vh;
+  }
+  .note-modal-body {
+    height: 75vh;
+  }
+  .note-modal-footer {
+    height: 15vh;
+  }
+}
+.desktop-modal{
+  max-height: 100vh;
+  .note-modal-header {
+    height: 10vh;
+  }
+  .note-modal-body {
+    max-height: 60vh;
+    overflow-y: auto;
+  }
+  .note-modal-footer {
+    height: 10vh;
+  }
+}

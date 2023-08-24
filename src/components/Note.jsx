@@ -1,3 +1,4 @@
+import '../scss/notes.scss'
 import PropTypes from "prop-types";
 import { Card, CardBody, CardFooter, CardHeader, Heading, Text } from "@chakra-ui/react"
 import ThemeState from "../context/ThemeContext";
@@ -9,7 +10,7 @@ const Note = ({ note }) => {
 	const { theme } = ThemeState()
 
 	return (
-		<div className='notecard'>
+		<div className='card notecard'>
 			<Card size="md" style={theme === 'dark' ? {
 				border: '1px solid #e2e8f0',
 			} : {}} className={`notecard ${theme === 'dark' ? 'bg-dark text-white' : 'bg-white'}`}>
