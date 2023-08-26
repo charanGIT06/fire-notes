@@ -2,6 +2,7 @@
   "name": "Fire Notes",
   "start_url": "./index.html",
   "display": "standalone",
+  "orientation": "portrait",
   "icons": [
     {
       "src": "/src/assets/fire-48.png",
