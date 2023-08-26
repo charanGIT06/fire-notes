@@ -92,3 +92,17 @@
     height: 15vh;
   }
 }
+
+.tool {
+  color: white !important;
+}
+.tool:hover {
+  background-color: gray;
+  // color: black;
+  border-radius: 50%;
+}
+.new-note-mobile {
+  position: absolute;
+  bottom: 15px;
+  right: 15px;
+}

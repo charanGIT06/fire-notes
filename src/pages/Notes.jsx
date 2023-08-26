@@ -1,7 +1,7 @@
 import SideNav from '../components/SideNav'
 import {
-	Input, Textarea, Tooltip, useDisclosure, Button,
-} from "@chakra-ui/react";
+	Input, Textarea, Tooltip, useDisclosure, Button, IconButton, // eslint-disable-line no-unused-vars
+} from "@chakra-ui/react"; // eslint-disable-line no-unused-vars
 import { useState } from "react";
 import { collection, doc, addDoc, updateDoc, deleteDoc, setDoc, serverTimestamp } from "firebase/firestore";
 import firebase from "../js/firebase.js";
@@ -11,6 +11,8 @@ import UserAuth from '../context/UserContext';
 import NoteModal from '../components/modals/NoteModal';
 import ThemeState from '../context/ThemeContext';
 import NotesState from '../context/NotesContext';
+import Toolbar from '../components/Toolbar'; // eslint-disable-line no-unused-vars
+import { BiPlus } from 'react-icons/bi'; // eslint-disable-line no-unused-vars
 
 const Notes = () => {
 	// Firestore Credentials
@@ -173,7 +175,11 @@ const Notes = () => {
 									</div>
 								</div>
 							</div>
+							{/* <div className="new-note-mobile">
+								<IconButton isRound={true} size={'lg'} icon={<BiPlus size={'30px'} />} onClick={onOpen} />
+							</div> */}
 						</div>
+						{/* <Toolbar /> */}
 						<NotesContainer notes={activeNotes} searchText={searchText} setModalData={setModalData} onOpen={onOpen} />
 					</div>
 				</div>

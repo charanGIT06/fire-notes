@@ -34,6 +34,25 @@
       "type": "image/png"
     }
   ],
+  "theme_color": "#000000",
+  "background_color": "#ffffff",
+  "shortcuts": [
+    {
+      "name": "New Note",
+      "url": "./notes",
+      "description": "Create a new note"
+    },
+    {
+      "name": "Shared",
+      "url": "./shared",
+      "description": "Shared Notes"
+    },
+    {
+      "name": "Profile",
+      "url": "./profile",
+      "description": "Profile"
+    }
+  ],
   "related_applications": [
     {
       "platform": "play",
