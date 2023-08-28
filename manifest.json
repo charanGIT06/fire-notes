@@ -1,8 +1,6 @@
 {
+  "short_name": "FireNotes",
   "name": "Fire Notes",
-  "start_url": "./index.html",
-  "display": "standalone",
-  "orientation": "portrait",
   "icons": [
     {
       "src": "/src/assets/fire-48.png",
@@ -35,29 +33,25 @@
       "type": "image/png"
     }
   ],
-  "theme_color": "#000000",
-  "background_color": "#ffffff",
+  "start_url": "/",
+  "background_color": "white",
+  "theme_color": "white",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "scope": "/",
   "shortcuts": [
     {
       "name": "New Note",
-      "url": "./notes",
-      "description": "Create a new note"
-    },
-    {
-      "name": "Shared",
-      "url": "./shared",
-      "description": "Shared Notes"
-    },
-    {
-      "name": "Profile",
-      "url": "./profile",
-      "description": "Profile"
+      "short_name": "New",
+      "description": "Create a new note",
+      "url": "/notes",
+      "icons": [
+        {
+          "src": "/src/assets/fire-96.png",
+          "sizes": "96x96"
+        }
+      ]
     }
   ],
-  "related_applications": [
-    {
-      "platform": "play",
-      "url": ""
-    }
-  ]
+  "description": "A simple note taking app"
 }
