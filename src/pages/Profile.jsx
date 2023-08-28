@@ -1,6 +1,6 @@
 import { Avatar, Button, Card, CardBody, FormControl, FormLabel, Input } from '@chakra-ui/react'
 import SideNav from '../components/SideNav'
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { EditIcon } from '@chakra-ui/icons';
 import UserAuth from '../context/UserContext';
 import { collection, onSnapshot, query, updateDoc, where } from 'firebase/firestore';
@@ -21,11 +21,7 @@ const Profile = () => {
   const { profile, setProfile, setProfileDetails } = UserAuth();
   const { setActiveNotes, setArchiveNotes, setTrashNotes, setSharedNotes } = NotesState();
 
-  const [username, setUsername] = useState('');
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState(''); // eslint-disable-line no-unused-vars
-  const [location, setLocation] = useState('');
+  const [profileData, setProfileData] = useState({});
 
   const updateProfileDetails = () => {
     const q = query(collection(db, "users"), where("username", "==", user.uid));
@@ -33,29 +29,15 @@ const Profile = () => {
       querySnapshot.forEach(async (doc) => {
         await updateDoc(doc.ref, {
           profile: {
-            firstName: firstName,
-            lastName: lastName,
-            location: location
+            firstName: profileData.firstName,
+            lastName: profileData.lastName,
+            location: profileData.location
           }
         });
         // console.log(doc.data());
       });
     });
   }
-
-  // const getProfileDetails = async () => {
-  //   const usersRef = collection(db, "users");
-  //   const q = query(usersRef, where("username", "==", userId));
-  //   onSnapshot(q, (querySnapshot) => {
-  //     querySnapshot.forEach((doc) => {
-  //       const data = doc.data();
-  //       setUsername(data.username);
-  //       setFirstName(data.profile.firstName);
-  //       setLastName(data.profile.lastName);
-  //       setEmail(data.email);
-  //     });
-  //   });
-  // }
 
   const handleSignOut = () => {
     setUser({})
@@ -68,18 +50,18 @@ const Profile = () => {
   }
 
   useEffect(() => {
-    if (!profile) {
-      // console.log('Setting profile')
+    if (Object.keys(profile).length === 0) {
       setProfileDetails(user.displayName)
     } else {
-      // console.log('profile found')
-      setUsername(profile.displayName)
-      setFirstName(profile.firstName)
-      setLastName(profile.lastName)
-      setEmail(profile.email)
-      setLocation(profile.location)
+      setProfileDetails({
+        uid: '',
+        displayName: '',
+        firstName: '',
+        lastName: '',
+        email: '',
+      })
     }
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <div className={`profile-page ${theme === 'dark' ? 'bg-dark text-white' : 'bg-white'}`}>
@@ -95,17 +77,17 @@ const Profile = () => {
                 <CardBody>
                   <div className="section-1 d-flex flex-column flex-md-row align-items-center p-3">
                     <div className="profile-img">
-                      <Avatar name={user && user.displayName} size='xl' />
+                      <Avatar name={profile.displayName} size='xl' />
                     </div>
                     <div className="basic-info ps-4 w-100 my-3">
                       <div className="name">
-                        <h5 className='pb-2 mb-0'>{firstName} {lastName}</h5>
+                        <h5 className='pb-2 mb-0'>{profile.firstName} {profile.lastName}</h5>
                       </div>
                       <div className="username">
-                        <p className='pb-2 mb-0'>{user && user.displayName}</p>
+                        <p className='pb-2 mb-0'>{profile.displayName}</p>
                       </div>
                       <div className="email">
-                        <p className='pb-2 mb-0'>{user && user.email}</p>
+                        <p className='pb-2 mb-0'>{profile.email}</p>
                       </div>
                     </div>
                     <div className="editButton">
@@ -128,25 +110,38 @@ const Profile = () => {
                           <div className="username mb-4">
                             <FormControl id="username" className='pe-2'>
                               <FormLabel>Username</FormLabel>
-                              <Input id='profile-username' className="username" defaultValue={username} variant={edit ? 'outline' : 'unstyled'} placeholder="Username" isReadOnly={!edit} onChange={(e) => { setUsername(e.target.value) }} />
+                              <Input id='profile-username' className="username" defaultValue={profile.displayName} variant={'unstyled'} placeholder="Username" readOnly={true} />
                             </FormControl>
                           </div>
                           <div className="name mb-4 d-flex flex-column flex-md-row w-100">
                             <FormControl id="firstname" className="pe-3">
                               <FormLabel>First Name</FormLabel>
-                              <Input id='profile-firstname' className="firstname" defaultValue={firstName} variant={edit ? 'outline' : 'unstyled'} placeholder="First Name" isReadOnly={!edit} onChange={(e) => { setFirstName(e.target.value) }} />
+                              <Input id='profile-firstname' className="firstname" defaultValue={profile.firstName} variant={edit ? 'outline' : 'unstyled'} placeholder="First Name" isReadOnly={!edit} onChange={(e) => {
+                                setProfileData({
+                                  ...profileData,
+                                  firstName: e.target.value
+                                })
+                              }} />
                             </FormControl>
                             <FormControl id="lastname" className="pe-2 pt-4 pt-md-0">
                               <FormLabel>Last Name</FormLabel>
-                              <Input id='profile-lastname' className="lastname" defaultValue={lastName} variant={edit ? 'outline' : 'unstyled'} placeholder="Last Name" isReadOnly={!edit} onChange={(e) => {
-                                setLastName(e.target.value);
+                              <Input id='profile-lastname' className="lastname" defaultValue={profile.lastName} variant={edit ? 'outline' : 'unstyled'} placeholder="Last Name" isReadOnly={!edit} onChange={(e) => {
+                                setProfileData({
+                                  ...profileData,
+                                  lastName: e.target.value
+                                })
                               }} />
                             </FormControl>
                           </div>
                           <div className="location">
                             <FormControl id="location">
                               <FormLabel>Location</FormLabel>
-                              <Input id='profile-location' className="location" defaultValue={location} variant={edit ? 'outline' : 'unstyled'} placeholder="Location" isReadOnly={!edit} onChange={(e) => { setLocation(e.target.value) }} />
+                              <Input id='profile-location' className="location" defaultValue={profile.location ?? ''} variant={edit ? 'outline' : 'unstyled'} placeholder="Location" isReadOnly={!edit} onChange={(e) => {
+                                setProfileData({
+                                  ...profileData,
+                                  location: e.target.value
+                                })
+                              }} />
                             </FormControl>
                           </div>
                         </div>

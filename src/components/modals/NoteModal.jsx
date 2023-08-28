@@ -2,13 +2,14 @@ import { Avatar, Button, IconButton, Input, Modal, ModalContent, ModalOverlay, T
 import { BsFillArchiveFill, BsFillPersonPlusFill, BsPinFill } from 'react-icons/bs';
 import propsTypes from 'prop-types';
 import CollaboratorPopover from '../popovers/CollaboratorPopover';
-import { collection, doc, getDocs, query, setDoc, updateDoc, where } from 'firebase/firestore';
+import { doc, setDoc, updateDoc } from 'firebase/firestore';
 import UserAuth from '../../context/UserContext';
 import firebase from '../../js/firebase';
 import { useRef, useState } from 'react';
 import { isMobile } from 'react-device-detect';
 import { BiSolidTrashAlt } from 'react-icons/bi';
 import { CloseIcon } from '@chakra-ui/icons';
+import firestoreFunctions from '../../js/firestoreFunctions.js';
 
 const NoteModal = ({
   isOpen,
@@ -52,29 +53,6 @@ const NoteModal = ({
     }
   }
 
-  const getUserFromEmail = async (email) => {
-    try {
-      const usersCollection = collection(db, 'users')
-      const q = query(usersCollection, where('email', '==', email))
-      const querySnapshot = await getDocs(q)
-      const user = querySnapshot.docs.map(doc => {
-        return {
-          uid: doc.data().uid,
-          email: doc.data().email,
-          displayName: doc.data().username,
-          firstName: doc.data().profile.firstName,
-          lastName: doc.data().profile.lastName,
-        }
-      })
-      if (user.length === 0) {
-        return 'none'
-      }
-      return user[0]
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
   const collaboratorRef = useRef();
 
   const handleClick = async () => {
@@ -94,7 +72,7 @@ const NoteModal = ({
       })
 
     } else {
-      await getUserFromEmail(collaboratorRef.current.value).then((collaborator) => {
+      await firestoreFunctions.getUserFromEmail(collaboratorRef.current.value).then((collaborator) => {
         newCollaborator = collaborator
       })
 
@@ -125,7 +103,7 @@ const NoteModal = ({
           ...currentNote,
           collaborators: [...currentNote.collaborators || [], newCollaborator]
         })
-        // await updateNote()
+
         await updateDoc(sharedNoteRef, {
           collaborators: [...currentNote.collaborators || [], newCollaborator]
         }).then(() => {
@@ -230,10 +208,10 @@ const NoteModal = ({
                     trigger={
                       <IconButton className="me-1" color='gray.500' variant='ghost' size={'lg'} isRound={true} icon={<BsFillPersonPlusFill size={'25px'} />} />
                     }
-                    header={<h4>Collaborators</h4>}
+                    header={<h4 className='text-dark'>Collaborators</h4>}
 
                     body={
-                      <div className="form d-flex flex-row">
+                      <div className="form d-flex flex-row text-dark">
                         <Input type='email' placeholder='Enter email...' className='me-1' ref={collaboratorRef} />
                         <Button onClick={handleClick}>Add</Button>
                       </div>

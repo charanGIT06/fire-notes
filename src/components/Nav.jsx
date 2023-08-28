@@ -8,6 +8,7 @@ import ThemeState from "../context/ThemeContext";
 import { MdDarkMode, MdLightMode } from "react-icons/md";
 import { useLocation } from "react-router-dom"
 import { useEffect, useState } from "react";
+import '../scss/index.scss'
 
 const Nav = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -34,15 +35,17 @@ const Nav = () => {
                 setSearchText(e.target.value)
               }} />
             </div>
-            <div className="account w-25 d-flex flex-row justify-content-end align-items-center" style={{ cursor: 'pointer' }} onClick={() => {
-              if (user !== {}) {
-                navigate('/profile')
-              } else {
-                navigate('/login')
-              }
-            }}>
-              <p className="my-0 me-2">{user && user.displayName}</p>
-              <Avatar name={user && user.displayName} size='sm' />
+            <div className="w-25 d-flex flex-row justify-content-end align-items-center">
+              <div className="account d-flex flex-row align-items-center p-2" style={{ borderRadius: '50px', cursor: 'pointer' }} onClick={() => {
+                if (user && user.uid !== undefined) {
+                  navigate('/profile')
+                } else {
+                  navigate('/login')
+                }
+              }}>
+                <p className="my-0 me-2">{user && user.displayName || 'Login'}</p>
+                <Avatar name={user && user.displayName} size='sm' />
+              </div>
             </div>
           </div>
         </div>

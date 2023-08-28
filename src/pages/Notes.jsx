@@ -13,8 +13,12 @@ import ThemeState from '../context/ThemeContext';
 import NotesState from '../context/NotesContext';
 import Toolbar from '../components/Toolbar'; // eslint-disable-line no-unused-vars
 import { BiPlus } from 'react-icons/bi'; // eslint-disable-line no-unused-vars
+import { useNavigate } from 'react-router-dom';
 
 const Notes = () => {
+	// Utils
+	const navigate = useNavigate();
+
 	// Firestore Credentials
 	const db = firebase.db;
 
@@ -44,13 +48,20 @@ const Notes = () => {
 
 	const updateNote = async () => {
 		if (!currentNoteChanged) {
-			console.log('No changes made to note')
 			return
 		} else {
 			try {
+				// Updating the note in the active collection
 				const activeNoteRef = doc(collection(db, 'notes', user.uid, 'active'), currentNote.id)
 				await updateDoc(activeNoteRef, currentNote)
-				console.log('Note updated!')
+
+				// Updating the note for collaborators
+				currentNote.collaborators.forEach(async collaborator => {
+					const sharedDoc = doc(db, 'notes', collaborator.uid, 'shared', currentNote.id)
+					await updateDoc(sharedDoc, {
+						...currentNote,
+					})
+				});
 
 				setCurrentNote({})
 				setCurrentNoteChanged(false)
@@ -166,7 +177,11 @@ const Notes = () => {
 										<div className="btns d-flex flex-row justify-content-end w-100">
 											<Tooltip label='Close' hasArrow='true'>
 												<Button className='me-2' variant='solid' colorScheme='yellow' onClick={() => {
-													addNote()
+													if (user) {
+														addNote()
+													} else {
+														navigate('/login')
+													}
 												}}>
 													Save
 												</Button>

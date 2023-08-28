@@ -9,13 +9,15 @@ import NavState from "../context/NavContext"
 import { IconButton, useDisclosure, Tooltip } from "@chakra-ui/react"
 import SharedModal from "../components/modals/SharedModal"
 import NotesState from "../context/NotesContext"
-// import UserAuth from "../context/UserContext"
 import { MdRefresh } from "react-icons/md"
+import UserAuth from "../context/UserContext"
+import { useNavigate } from "react-router-dom"
 
 const Shared = () => {
   const { theme } = ThemeState()
-  // const { user } = UserAuth()
+  const { user } = UserAuth()
   const { searchText } = NavState()
+  const navigate = useNavigate()
 
   // Props
   // const db = firebase.db
@@ -97,7 +99,13 @@ const Shared = () => {
             <div className="header d-flex align-items-center mb-3">
               <h5 className="ms-3 w-100">Shared</h5>
               <Tooltip title="Refresh" placement="bottom">
-                <IconButton icon={<MdRefresh />} className="me-3" isRound={true} onClick={() => getNotes('shared')} />
+                <IconButton icon={<MdRefresh />} className="me-3" isRound={true} onClick={() => {
+                  if (user) {
+                    getNotes('shared')
+                  } else {
+                    navigate('/login')
+                  }
+                }} />
               </Tooltip>
             </div>
             <NotesContainer notes={sharedNotes} searchText={searchText} setModalData={setModalData} onOpen={onOpen} />

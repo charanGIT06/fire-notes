@@ -49,7 +49,7 @@ export function NotesProvider({ children }) {
   }
 
   useEffect(() => {
-    if (user) {
+    if (user && user.uid !== undefined) {
       getNotes('active')
       getNotes('archive')
       getNotes('trash')

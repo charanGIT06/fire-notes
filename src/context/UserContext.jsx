@@ -20,20 +20,20 @@ export function UserProvider({ children }) {
   const navigate = useNavigate()
 
   const [user, setUser] = useState({})
-  const [profile, setProfile] = useState()
+  const [profile, setProfile] = useState({})
 
   const setProfileDetails = async (username) => {
     const usersRef = collection(db, "users");
-    const q = query(usersRef, where("username", "==", username));
-    await onSnapshot(q, (querySnapshot) => {
+    const q = query(usersRef, where("displayName", "==", username));
+    onSnapshot(q, (querySnapshot) => {
       querySnapshot.forEach((doc) => {
         const data = doc.data();
         setProfile({
-          uid: user.uid,
-          displayName: data.username,
-          firstName: data.profile.firstName,
-          lastName: data.profile.lastName,
-          email: data.email,
+          uid: user.uid || '',
+          displayName: data.displayName || '',
+          firstName: data.profile.firstName || '',
+          lastName: data.profile.lastName || '',
+          email: data.email || '',
         })
       });
     });
@@ -97,6 +97,8 @@ export function UserProvider({ children }) {
       .then((userCredential) => {
         const user = userCredential.user;
         setUser(user)
+        console.log(user.displayName)
+        setProfileDetails(user && user.displayName || '')
         navigate('/')
         toast({
           title: "Login Successful",

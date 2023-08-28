@@ -33,11 +33,11 @@ const CollaboratorPopover = ({ trigger, header, body, footer, alert }) => {
         <PopoverBody>
           {body}
 
-          <Alert status='info' className='my-2 rounded'>
+          <Alert status='info' className='my-2 rounded text-dark'>
             <AlertIcon />
             Collaborators should be registered users of this app.
           </Alert>
-          <div className={`${alert.alert===true ? 'd-block' : 'd-none'}`}>
+          <div className={`${alert.alert === true ? 'd-block' : 'd-none'} text-dark`}>
             <Alert status={alert.status} className='my-2 rounded'>
               <AlertIcon />
               {alert.message}

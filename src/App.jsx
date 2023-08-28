@@ -28,12 +28,12 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                 <div className="app">
                   <Nav />
                   <Routes>
-                    <Route path="/" element={<ProtectedRoute><Notes /></ProtectedRoute>} />
+                    <Route path="/" element={<Notes />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/signup" element={<Signup />} />
-                    <Route path="/archive" element={<ProtectedRoute><Archive /></ProtectedRoute>} />
-                    <Route path="/trash" element={<ProtectedRoute><Trash /></ProtectedRoute>} />
-                    <Route path="/shared" element={<ProtectedRoute><Shared /></ProtectedRoute>} />
+                    <Route path="/archive" element={<Archive />} />
+                    <Route path="/trash" element={<Trash />} />
+                    <Route path="/shared" element={<Shared />} />
                     <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
                     {/* <Route path="/test" element={<Test />} /> */}
                   </Routes>
