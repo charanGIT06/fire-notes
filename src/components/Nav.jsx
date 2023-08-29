@@ -28,7 +28,7 @@ const Nav = () => {
       <div className={`nav ${theme === 'dark' ? 'bg-dark text-white' : 'bg-white'}`}>
         <div className="big-screens d-none d-md-block w-100 p-2">
           <div className="d-flex flex-row align-items-center w-100 py-3 px-3">
-            <Link to={user !== {} ? '/' : '/login'} className="w-25">🔥Fire Notes</Link>
+            <Link to={'/'} className="w-25">🔥Fire Notes</Link>
             <div className="searchbar w-50 d-flex flex-row align-items-center p-2" style={{ border: `2px solid ${themeColor}`, borderRadius: '25px' }}>
               <SearchIcon color='grey' className="mx-2" />
               <Input type="text" variant='unstyled' placeholder="Search" onChange={(e) => {
