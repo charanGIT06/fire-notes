@@ -53,18 +53,18 @@ const NoteModal = ({
     }
   }
 
-  const collaboratorRef = useRef();
+  const [collaborator, setCollaborator] = useState('')
 
   const handleClick = async () => {
     let newCollaborator = {}
-    if (collaboratorRef.current.value === '') {
+    if (collaborator === '') {
       setAlert({
         alert: true,
         status: 'error',
         message: 'Please enter an email'
       })
       return
-    } else if (collaboratorRef.current.value === user.email) {
+    } else if (collaborator === user.email) {
       setAlert({
         alert: true,
         status: 'error',
@@ -72,8 +72,8 @@ const NoteModal = ({
       })
 
     } else {
-      await firestoreFunctions.getUserFromEmail(collaboratorRef.current.value).then((collaborator) => {
-        newCollaborator = collaborator
+      await firestoreFunctions.getUserFromEmail(collaborator).then((c) => {
+        newCollaborator = c
       })
 
       if (newCollaborator === 'none') {
@@ -212,7 +212,9 @@ const NoteModal = ({
 
                     body={
                       <div className="form d-flex flex-row text-dark">
-                        <Input type='email' placeholder='Enter email...' className='me-1' ref={collaboratorRef} />
+                        <Input type='email' placeholder='Enter email...' className='me-1' onChange={(e) => {
+                          setCollaborator(e.target.value)
+                        }} />
                         <Button onClick={handleClick}>Add</Button>
                       </div>
                     }

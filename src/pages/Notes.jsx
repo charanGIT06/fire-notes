@@ -69,7 +69,7 @@ const Notes = () => {
 				onClose()
 				getNotes('active')
 			} catch (error) {
-				console.log(error)
+				console.log(error, 'notes', 'line 64')
 			}
 		}
 	}
