@@ -3,6 +3,8 @@ import '../scss/notes.scss'
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 import NotesState from "../context/NotesContext";
+import { ScaleFade, useDisclosure } from "@chakra-ui/react";
+import { useEffect } from "react";
 
 const NotesContainer = ({ notes, searchText, setModalData, onOpen, from }) => { // eslint-disable-line no-unused-vars
 	NotesContainer.propTypes = {
@@ -20,6 +22,11 @@ const NotesContainer = ({ notes, searchText, setModalData, onOpen, from }) => { 
 
 	const navigate = useNavigate();
 	const { setPresentNote } = NotesState()
+	const { isOpen, onToggle } = useDisclosure()
+
+	useEffect(() => {
+			onToggle()
+	}, [])
 
 	return (
 		<div className="pb-3 container px-4 w-100">
@@ -42,7 +49,9 @@ const NotesContainer = ({ notes, searchText, setModalData, onOpen, from }) => { 
 									navigate(`/pnote/${from}`)
 								}}
 							>
-								<Note note={note} />
+								<ScaleFade initialScale={0.8} in={isOpen}>
+									<Note note={note} />
+								</ScaleFade>
 							</div>
 						);
 					})
