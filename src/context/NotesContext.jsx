@@ -1,6 +1,6 @@
 import { useContext, createContext, useState, useEffect } from 'react';
 import propTypes from 'prop-types'
-import { collection, deleteDoc, doc, getDocs, query, setDoc, updateDoc, where } from 'firebase/firestore';
+import { collection, deleteDoc, doc, getDocs, orderBy, query, setDoc, updateDoc, where } from 'firebase/firestore';
 import firebase from '../js/firebase.js';
 import UserAuth from './UserContext';
 import { useToast } from '@chakra-ui/react';
@@ -185,7 +185,7 @@ export function NotesProvider({ children }) {
   const getNotes = async (page) => {
     try {
       const notes = []
-      const q = query(collection(db, 'notes', user.uid, page))
+      const q = query(collection(db, 'notes', user.uid, page), orderBy('timestamp', 'desc'))
       await getDocs(q).then(
         (querySnapshot) => {
           querySnapshot.forEach((doc) => {
