@@ -108,7 +108,7 @@ const Shared = () => {
                 }} />
               </Tooltip>
             </div>
-            <NotesContainer notes={sharedNotes} searchText={searchText} setModalData={setModalData} onOpen={onOpen} />
+            <NotesContainer notes={sharedNotes} searchText={searchText} setModalData={setModalData} onOpen={onOpen} from={'shared'} />
           </div>
         </div>
 
