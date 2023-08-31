@@ -1,47 +1,29 @@
 import { Avatar, Button, Card, CardBody, FormControl, FormLabel, Input } from '@chakra-ui/react'
 import SideNav from '../components/SideNav'
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { EditIcon } from '@chakra-ui/icons';
 import UserAuth from '../context/UserContext';
-import { collection, onSnapshot, query, updateDoc, where } from 'firebase/firestore';
 import { getAuth, signOut } from 'firebase/auth';
-import firebase from '../js/firebase.js';
 import { useNavigate } from 'react-router-dom';
 import { BsUpload } from 'react-icons/bs';
 import ThemeState from '../context/ThemeContext';
 import NotesState from '../context/NotesContext';
 
 const Profile = () => {
-  const db = firebase.db;
   const auth = getAuth();
   const navigate = useNavigate();
   const { theme } = ThemeState();
-  const { user, setUser } = UserAuth();
+  const { user, setUser, updateCurrentUser } = UserAuth();
   const [edit, setEdit] = useState(false);
-  const { profile, setProfile, setProfileDetails } = UserAuth();
+  const { updateProfileDetails } = UserAuth();
   const { setActiveNotes, setArchiveNotes, setTrashNotes, setSharedNotes } = NotesState();
 
-  const [profileData, setProfileData] = useState({});
-
-  const updateProfileDetails = () => {
-    const q = query(collection(db, "users"), where("username", "==", user.uid));
-    onSnapshot(q, (querySnapshot) => {
-      querySnapshot.forEach(async (doc) => {
-        await updateDoc(doc.ref, {
-          profile: {
-            firstName: profileData.firstName,
-            lastName: profileData.lastName,
-            location: profileData.location
-          }
-        });
-        // console.log(doc.data());
-      });
-    });
-  }
+  const firstName = useRef(null);
+  const lastName = useRef(null);
+  const location = useRef(null);
 
   const handleSignOut = () => {
     setUser({})
-    setProfile({})
     setActiveNotes([])
     setArchiveNotes([])
     setTrashNotes([])
@@ -49,19 +31,17 @@ const Profile = () => {
     navigate('/login');
   }
 
-  useEffect(() => {
-    if (Object.keys(profile).length === 0) {
-      setProfileDetails(user.displayName)
-    } else {
-      setProfileDetails({
-        uid: '',
-        displayName: '',
-        firstName: '',
-        lastName: '',
-        email: '',
-      })
-    }
-  }, [])
+  const handleSubmit = async () => {
+    console.log('formSubmit');
+    await updateProfileDetails(firstName?.current?.value, lastName?.current?.value, location?.current?.value);
+    setEdit(false);
+  }
+
+  if (!user.firstName) {
+    updateCurrentUser().catch((error) => {
+      console.log(error);
+    });
+  }
 
   return (
     <div className={`profile-page ${theme === 'dark' ? 'bg-dark text-white' : 'bg-white'}`}>
@@ -77,17 +57,17 @@ const Profile = () => {
                 <CardBody>
                   <div className="section-1 d-flex flex-column flex-md-row align-items-center p-3">
                     <div className="profile-img">
-                      <Avatar name={profile.displayName} size='xl' />
+                      <Avatar name={user.displayName} size='xl' />
                     </div>
                     <div className="basic-info ps-4 w-100 my-3">
                       <div className="name">
-                        <h5 className='pb-2 mb-0'>{profile.firstName} {profile.lastName}</h5>
+                        <h5 className='pb-2 mb-0'>{user.firstName} {user.lastName}</h5>
                       </div>
                       <div className="username">
-                        <p className='pb-2 mb-0'>{profile.displayName}</p>
+                        <p className='pb-2 mb-0'>{user.displayName}</p>
                       </div>
                       <div className="email">
-                        <p className='pb-2 mb-0'>{profile.email}</p>
+                        <p className='pb-2 mb-0'>{user.email}</p>
                       </div>
                     </div>
                     <div className="editButton">
@@ -104,65 +84,52 @@ const Profile = () => {
                   border: '1px solid #e2e8f0',
                 } : {}}>
                   <CardBody>
-                    <div className="section-2 px-3 d-flex flex-column">
-                      <div className="user-details d-flex flex-column flex-md-row">
-                        <div className="inputs pt-2 w-100">
-                          <div className="username mb-4">
-                            <FormControl id="username" className='pe-2'>
-                              <FormLabel>Username</FormLabel>
-                              <Input id='profile-username' className="username" defaultValue={profile.displayName} variant={'unstyled'} placeholder="Username" readOnly={true} />
-                            </FormControl>
+                    <form onSubmit={(e) => {
+                      e.preventDefault();
+                      handleSubmit();
+                    }}>
+                      <div className="section-2 px-3 d-flex flex-column">
+                        <div className="user-details d-flex flex-column flex-md-row">
+                          <div className="inputs pt-2 w-100">
+                            <div className="username mb-4">
+                              <FormControl id="username" className='pe-2'>
+                                <FormLabel>Username</FormLabel>
+                                <Input id='profile-username' className="username" defaultValue={user.displayName} variant={'unstyled'} placeholder="Username" readOnly={true} />
+                              </FormControl>
+                            </div>
+                            <div className="name mb-4 d-flex flex-column flex-md-row w-100">
+                              <FormControl id="firstname" className="pe-3">
+                                <FormLabel>First Name</FormLabel>
+                                <Input id='profile-firstname' className="firstname" defaultValue={user.firstName} variant={edit ? 'outline' : 'unstyled'} placeholder="First Name" isReadOnly={!edit} ref={firstName} />
+                              </FormControl>
+                              <FormControl id="lastname" className="pe-2 pt-4 pt-md-0">
+                                <FormLabel>Last Name</FormLabel>
+                                <Input id='profile-lastname' className="lastname" defaultValue={user.lastName} variant={edit ? 'outline' : 'unstyled'} placeholder="Last Name" isReadOnly={!edit} ref={lastName} />
+                              </FormControl>
+                            </div>
+                            <div className="location">
+                              <FormControl id="location">
+                                <FormLabel>Location</FormLabel>
+                                <Input id='profile-location' className="location" defaultValue={user.location ?? ''} variant={edit ? 'outline' : 'unstyled'} placeholder="Location" isReadOnly={!edit} ref={location} />
+                              </FormControl>
+                            </div>
                           </div>
-                          <div className="name mb-4 d-flex flex-column flex-md-row w-100">
-                            <FormControl id="firstname" className="pe-3">
-                              <FormLabel>First Name</FormLabel>
-                              <Input id='profile-firstname' className="firstname" defaultValue={profile.firstName} variant={edit ? 'outline' : 'unstyled'} placeholder="First Name" isReadOnly={!edit} onChange={(e) => {
-                                setProfileData({
-                                  ...profileData,
-                                  firstName: e.target.value
-                                })
-                              }} />
-                            </FormControl>
-                            <FormControl id="lastname" className="pe-2 pt-4 pt-md-0">
-                              <FormLabel>Last Name</FormLabel>
-                              <Input id='profile-lastname' className="lastname" defaultValue={profile.lastName} variant={edit ? 'outline' : 'unstyled'} placeholder="Last Name" isReadOnly={!edit} onChange={(e) => {
-                                setProfileData({
-                                  ...profileData,
-                                  lastName: e.target.value
-                                })
-                              }} />
-                            </FormControl>
-                          </div>
-                          <div className="location">
-                            <FormControl id="location">
-                              <FormLabel>Location</FormLabel>
-                              <Input id='profile-location' className="location" defaultValue={profile.location ?? ''} variant={edit ? 'outline' : 'unstyled'} placeholder="Location" isReadOnly={!edit} onChange={(e) => {
-                                setProfileData({
-                                  ...profileData,
-                                  location: e.target.value
-                                })
-                              }} />
-                            </FormControl>
+                          <div className="editButton mt-4 mt-md-0">
+                            <Button size='sm' rightIcon={<EditIcon />} variant='outline' style={{ borderRadius: '50px' }}
+                              colorScheme={theme === 'dark' ? 'white' : 'black'}
+                              onClick={() => {
+                                setEdit(!edit);
+                              }}>Edit</Button>
                           </div>
                         </div>
-                        <div className="editButton mt-4 mt-md-0">
-                          <Button size='sm' rightIcon={<EditIcon />} variant='outline' style={{ borderRadius: '50px' }}
-                            colorScheme={theme === 'dark' ? 'white' : 'black'}
-                            onClick={() => {
-                              setEdit(!edit);
-                            }}>Edit</Button>
+                      </div>
+                      <div className={`section-3 px-3 ${edit ? 'd-inline' : 'd-none'}`}>
+                        <div className='btn-container px-3 pt-2'>
+                          <Button className="me-2 round-btn" onClick={() => { setEdit(false) }} >Cancel</Button>
+                          <Button type='submit' className='round-btn' colorScheme='yellow'>Save Changes</Button>
                         </div>
                       </div>
-                    </div>
-                    <div className={`section-3 px-3 ${edit ? 'd-inline' : 'd-none'}`}>
-                      <div className='btn-container px-3 pt-2'>
-                        <Button className="me-2 round-btn" onClick={() => { setEdit(false) }} >Cancel</Button>
-                        <Button className='round-btn' colorScheme='yellow' onClick={() => {
-                          updateProfileDetails();
-                          setEdit(false);
-                        }}>Save Changes</Button>
-                      </div>
-                    </div>
+                    </form>
                   </CardBody>
                 </Card>
               </div>

@@ -1,6 +1,6 @@
 import propTypes from 'prop-types'
 import '../scss/notes.scss'
-import { IconButton, Input, Tooltip, Button, Textarea, Alert, AlertIcon } from '@chakra-ui/react'
+import { IconButton, Input, Tooltip, Button, Textarea, Alert, AlertIcon, useDisclosure, Modal, ModalOverlay, ModalContent, Switch } from '@chakra-ui/react'
 import { GrClose } from 'react-icons/gr'
 import { useNavigate } from 'react-router-dom'
 import ThemeState from '../context/ThemeContext'
@@ -8,8 +8,9 @@ import CollaboratorPopover from './popovers/CollaboratorPopover' // eslint-disab
 import { BiSolidArchiveOut, BiSolidTrashAlt } from 'react-icons/bi'
 import { BsFillArchiveFill, BsFillPersonPlusFill, BsPinFill } from 'react-icons/bs'
 import NotesState from '../context/NotesContext'
-import { useState } from 'react'
 import { FaTrashRestoreAlt } from 'react-icons/fa'
+import { MdClose } from 'react-icons/md'
+import { useRef } from 'react'
 
 const NoteCard = ({ note, page }) => {
   NoteCard.propTypes = {
@@ -19,39 +20,45 @@ const NoteCard = ({ note, page }) => {
 
   const navigate = useNavigate();
   const { theme } = ThemeState()
-  const { updateNote, archiveNote, unArchiveNote, deleteNote, restoreNote, setPresentNote } = NotesState()
-  const [edit, setEdit] = useState(false)
+  const { updateNote, archiveNote, unArchiveNote, deleteNote, restoreNote, setPresentNote, shareNote } = NotesState()
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const sharedPerson = useRef(null)
+
+
+  const handleShare = async () => {
+    const permission = document.getElementById('canEdit').checked;
+    const status = await shareNote(sharedPerson?.current?.value, permission)
+    if (status === 'success') {
+      console.log(status)
+    } else {
+      console.log(status)
+    }
+  }
+
+  const handleSubmit = async () => {
+    console.log('submit')
+    await updateNote()
+    navigate(`/${page === 'notes' ? '' : page}`)
+  }
 
   return (
     <div className={`note-card my-1 px-3 py-2 ${theme === 'dark' ? 'bg-dark text-white' : 'bg-white'}`}>
-      <div style={{ height: '100%', border: '2px solid gray', borderRadius: '20px' }} className='m-0 px-3 shadow-lg'>
+      <div style={{ height: '100%', border: '2px solid gray', borderRadius: '20px' }} className='m-0 px-3'>
         <div className="card-heading d-flex flex-row justify-content-between align-items-center">
           <Input type="text" variant='unstyled' className='note-title heading' defaultValue={note.title} onChange={(e) => setPresentNote({
             ...note,
             title: e.target.value
           })} />
-          <IconButton icon={<GrClose />} isRound={true} size='sm' onClick={() => {
+          <IconButton icon={<MdClose size={'25px'} />} variant={'unstyled'} color={theme === 'dark' ? 'white' : 'gray'} isRound={true} size='sm' onClick={() => {
             navigate(`/${page === 'notes' ? '' : page}`)
             updateNote()
           }} />
         </div>
         <div className="card-content pe-2">
-          <Textarea variant='unstyled' className='note-textarea p-0 m-0 w-100' defaultValue={note.content} onChange={(e) => setPresentNote({
+          <Textarea variant='unstyled' className='note-textarea p-0 m-0' defaultValue={note.content} onChange={(e) => setPresentNote({
             ...note,
             content: e.target.value
           })} />
-          <div className={`add-collaborator ${edit ? 'd-block' : 'd-none'} w-100 py-2 px-3 text-white`}>
-            <h6>Add Collaborator</h6>
-            <hr />
-            <Alert status='info' className='text-dark rounded mb-3'>
-              <AlertIcon />
-              The collaborator should be a registered user of this app.
-            </Alert>
-            <div className='d-flex'>
-              <Input type='text' placeholder='Enter Email' className='me-1' color={'white'} />
-              <Button>Add</Button>
-            </div>
-          </div>
         </div>
         <div className="card-footer d-flex align-items-center">
           <div className="btns d-flex flex-row align-items-center justify-content-start w-100 mt-2">
@@ -84,7 +91,7 @@ const NoteCard = ({ note, page }) => {
                 }} />
               </Tooltip>
               <Tooltip label="Share" placement="top" hasArrow='true'>
-                <IconButton className={`${page === 'notes' ? 'me-1' : 'd-none'}`} color='gray.500' variant='ghost' size={'lg'} isRound={true} icon={<BsFillPersonPlusFill size={'25px'} />} onClick={() => setEdit(!edit)} />
+                <IconButton className={`${page === 'notes' ? 'me-1' : 'd-none'}`} color='gray.500' variant='ghost' size={'lg'} isRound={true} icon={<BsFillPersonPlusFill size={'25px'} />} onClick={() => { onOpen() }} />
               </Tooltip>
               {/* <CollaboratorPopover
                 trigger={
@@ -104,14 +111,47 @@ const NoteCard = ({ note, page }) => {
                 alert={alert}
               /> */}
             </div>
-            <Button variant={'ghost'} colorScheme='white' onClick={() => {
-              updateNote()
-            }}>
+            <Button variant={'ghost'} colorScheme='white' onClick={handleSubmit}>
               Save
             </Button>
           </div>
         </div>
       </div>
+
+      {/* Modal */}
+      <Modal isOpen={isOpen} isCentered={true} size='lg' className={`${theme === 'dark' ? 'bg-dark text-white' : 'bg-white text-dark'}`} onOverlayClick={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <div className={`modal-container ${theme === 'dark' ? 'bg-dark text-white' : 'bg-white'}`}>
+            <div className="modal-header d-flex flex-row align-item-center px-4 pt-4">
+              <h4 className="modal-title m-0 p-0">Share</h4>
+              <IconButton icon={<GrClose />} isRound={true} size='sm' onClick={onClose} />
+            </div>
+            <div className="modal-content px-4 pb-4">
+              <hr />
+              <form onSubmit={(e) => {
+                e.preventDefault()
+              }}>
+                <Alert status="info" className={`rounded mb-3 text-dark`}>
+                  <AlertIcon />
+                  The person you share with must have a Fire Notes account.
+                </Alert>
+                <Input name='sharedPerson' id='sharedPerson' type='text' placeholder="Enter email" ref={sharedPerson} focusBorderColor='yellow.500' />
+                <h6 className='mt-4'>Permissions</h6>
+                <div className="permissions px-3 pb-3">
+                  <div className="permission d-flex flex-row align-items-center justify-content-between">
+                    <p className='p-0 m-0'>Can Edit</p>
+                    <Switch id='canEdit' name='canEdit' colorScheme='yellow' defaultChecked={false} size='md' className='m-0' />
+                  </div>
+                </div>
+                <div className="d-flex flex-row justify-content-end mt-3">
+                  <Button variant='solid' colorScheme='yellow' onClick={handleShare}>Share</Button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </ModalContent>
+      </Modal>
     </div>
   )
 }

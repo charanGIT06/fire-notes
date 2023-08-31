@@ -17,6 +17,11 @@ const Nav = () => {
   const { user } = UserState()
   const navigate = useNavigate()
   const location = useLocation()
+  const page = location.pathname.split('/')
+  let pageName = '/' + page[page.length - 1]
+  if (pageName === '/notes') {
+    pageName = '/'
+  } 
   const [themeColor, setThemeColor] = useState(theme === 'dark' ? 'gray' : 'black')
 
   useEffect(() => {
@@ -126,7 +131,7 @@ const Nav = () => {
                     <Link to={route} key={text}
                       onClick={() => { onClose() }}
                     >
-                      <p className={`link px-3 py-3 m-0 ${location.pathname === route ? 'link-active text-dark' : ''}`}>{text}</p>
+                      <p className={`link px-3 py-3 m-0 ${pageName === route ? 'link-active text-dark' : ''}`}>{text}</p>
                     </Link>
                   )
                 })}

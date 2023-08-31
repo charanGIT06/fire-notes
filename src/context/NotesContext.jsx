@@ -1,8 +1,9 @@
 import { useContext, createContext, useState, useEffect } from 'react';
 import propTypes from 'prop-types'
-import { collection, deleteDoc, doc, getDocs, query, setDoc, updateDoc } from 'firebase/firestore';
+import { collection, deleteDoc, doc, getDocs, query, setDoc, updateDoc, where } from 'firebase/firestore';
 import firebase from '../js/firebase.js';
 import UserAuth from './UserContext';
+import { useToast } from '@chakra-ui/react';
 
 const NotesContext = createContext();
 
@@ -13,6 +14,7 @@ export function NotesProvider({ children }) {
 
   const db = firebase.db
   const { user } = UserAuth()
+  const toast = useToast()
 
   const [activeNotes, setActiveNotes] = useState([])
   const [archiveNotes, setArchiveNotes] = useState([])
@@ -103,6 +105,83 @@ export function NotesProvider({ children }) {
     }
   }
 
+  const shareNote = async (email, permission) => {
+    if (email === '') {
+      return 'Email is required!'
+    } else {
+      console.log('email', email)
+
+      let sharedPerson = {}
+      const usersRef = query(collection(db, 'users'), where('email', '==', email))
+      await getDocs(usersRef).then(
+        (querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            sharedPerson = { id: doc.id, ...doc.data() }
+          })
+        }
+      ).catch((error) => {
+        console.log(error)
+      })
+
+      if (sharedPerson.uid === undefined) {
+        return 'User not found!'
+      } else if (sharedPerson.uid === presentNote.uid) {
+        return 'You cannot share with yourself!'
+      } else if (presentNote.collaborators.length > 0) {
+        const isAlreadyShared = presentNote.collaborators.find((collaborator) => collaborator.uid === sharedPerson.uid)
+        if (isAlreadyShared) {
+          return 'User already has access to this note!'
+        } 
+      } else {
+        await updateDoc(doc(collection(db, 'notes', user.uid, 'active'), presentNote.id), {
+          ...presentNote,
+          collaborators: [...presentNote.collaborators, {
+            displayName: sharedPerson.displayName,
+            email: sharedPerson.email,
+            uid: sharedPerson.uid,
+            permission: {
+              canEdit: permission,
+            }
+          }]
+        }).then(() => {
+          toast({
+            title: 'Note shared!',
+            status: 'success',
+            duration: 3000,
+            isClosable: true,
+          })
+        }).catch((error) => {
+          console.log(error)
+        })
+
+        const sharedNotesRef = collection(db, 'notes', sharedPerson.uid, 'shared')
+        const sharedNote = doc(sharedNotesRef, presentNote.id)
+        await setDoc(sharedNote, {
+          ...presentNote,
+          permission: {
+            canEdit: permission,
+          },
+          collaborators: [],
+          owner: {
+            displayName: user.displayName,
+            email: user.email,
+          }
+        }).then(() => {
+          toast({
+            title: 'Note shared!',
+            status: 'success',
+            duration: 3000,
+            isClosable: true,
+          })
+        }).catch((error) => {
+          console.log(error)
+        })
+      }
+
+      return 'success'
+    }
+  }
+
   const getNotes = async (page) => {
     try {
       const notes = []
@@ -144,7 +223,7 @@ export function NotesProvider({ children }) {
   return (
     <NotesContext.Provider value={{
       activeNotes, setActiveNotes, archiveNotes, setArchiveNotes, trashNotes, setTrashNotes, sharedNotes, setSharedNotes,
-      getNotes, presentNote, setPresentNote, updateNote, archiveNote, deleteNote, unArchiveNote, restoreNote
+      getNotes, presentNote, setPresentNote, updateNote, archiveNote, deleteNote, unArchiveNote, restoreNote, shareNote
     }}>
       {children}
     </NotesContext.Provider>

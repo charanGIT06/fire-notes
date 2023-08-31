@@ -4,7 +4,7 @@ import firebase from '../js/firebase.js'
 import { useToast } from '@chakra-ui/react';
 import { FacebookAuthProvider, GoogleAuthProvider, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, updateProfile } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
-import { collection, doc, onSnapshot, query, setDoc, where } from 'firebase/firestore';
+import { collection, doc, getDocs, onSnapshot, query, setDoc, updateDoc } from 'firebase/firestore';
 import { useEffect } from 'react';
 
 const UserContext = createContext();
@@ -20,65 +20,95 @@ export function UserProvider({ children }) {
   const navigate = useNavigate()
 
   const [user, setUser] = useState({})
-  const [profile, setProfile] = useState({})
+  const [usernames, setUsernames] = useState([])
 
-  const setProfileDetails = async (username) => {
-    const usersRef = collection(db, "users");
-    const q = query(usersRef, where("displayName", "==", username));
-    onSnapshot(q, (querySnapshot) => {
-      querySnapshot.forEach((doc) => {
-        const data = doc.data();
-        setProfile({
-          uid: user.uid || '',
-          displayName: data.displayName || '',
-          firstName: data.profile.firstName || '',
-          lastName: data.profile.lastName || '',
-          email: data.email || '',
-        })
-      });
-    });
+  // const setProfileDetails = async (username) => {
+  //   const usersRef = collection(db, "users");
+  //   const q = query(usersRef, where("displayName", "==", username));
+  //   onSnapshot(q, (querySnapshot) => {
+  //     querySnapshot.forEach((doc) => {
+  //       const data = doc.data();
+  //       // setProfile({
+  //       //   uid: user.uid || '',
+  //       //   displayName: data.displayName || '',
+  //       //   firstName: data.profile.firstName || '',
+  //       //   lastName: data.profile.lastName || '',
+  //       //   email: data.email || '',
+  //       // })
+  //     });
+  //   });
+  // }
+
+  const updateProfileDetails = (firstName, lastName, location) => {
+    const profileRef = doc(collection(db, 'users'), user.uid);
+    updateDoc(profileRef, {
+      profile: {
+        firstName: firstName,
+        lastName: lastName,
+        location: location,
+      }
+    }).catch((error) => {
+      console.error('Error updating document: ', error);
+    }
+    );
   }
 
-  const createUser = async (displayName, firstName, lastName, email, password) => {
-    console.log(displayName, firstName, lastName, email, password)
-    await createUserWithEmailAndPassword(auth, email, password).then((userCredential) => {
+  const updateCurrentUser = async () => {
+    setTimeout(() => {
+      if (user && user.uid) {
+        const userRef = doc(collection(db, 'users'), user.uid);
+        onSnapshot(userRef, (doc) => {
+          setUser({
+            ...user,
+            firstName: doc.data().profile.firstName || '',
+            lastName: doc.data().profile.lastName || '',
+            location: doc.data().profile.location || '',
+          })
+        })
+      }
+    }, 2000)
+  }
+
+  const createUser = async (profile) => {
+    await createUserWithEmailAndPassword(auth, profile.email, profile.password).then((userCredential) => {
       const user = userCredential.user;
+
+      // Updating displayName
       updateProfile(user, {
-        displayName: displayName,
-      });
-      setUser(user)
-      console.log(profile)
-      const usernamesRef = collection(db, "usernames");
-      const newUsernameRef = doc(usernamesRef, user.uid);
-      setDoc(newUsernameRef, {
-        uid: user.uid,
-        displayName: displayName
+        displayName: profile.displayName,
       }).then(() => {
-        console.log("Username Added!");
+        // Adding name to user object
+        setUser({
+          ...user,
+          firstName: profile.firstName || '',
+          lastName: profile.lastName || '',
+        })
+      }).catch((error) => {
+        console.log(error)
       });
 
-      const usersRef = collection(db, "users");
-      const newUserRef = doc(usersRef, user.uid);
+      // Adding username to usernames collection
+      const newUsernameRef = doc(collection(db, "usernames"), user.uid);
+      setDoc(newUsernameRef, {
+        uid: user.uid,
+        displayName: profile.displayName
+      }).catch((error) => {
+        console.log(error)
+      });
+
+      // Adding user to users collection
+      const newUserRef = doc(collection(db, 'users'), user.uid);
       setDoc(newUserRef, {
         uid: user.uid,
-        displayName: displayName,
-        email: email,
-        password: password,
+        displayName: profile.displayName || '',
+        email: profile.email,
+        password: profile.password,
         profile: {
-          firstName: firstName,
-          lastName: lastName,
+          firstName: profile.firstName || "",
+          lastName: profile.lastName || '',
         }
-      }).then(() => {
-        setProfile(
-          {
-            uid: user.uid,
-            displayName: displayName,
-            firstName: firstName,
-            lastName: lastName,
-            email: email,
-          }
-        )
-        console.log("User Added!");
+      }).catch((error) => {
+        console.log(error);
       })
 
       navigate('/');
@@ -96,9 +126,16 @@ export function UserProvider({ children }) {
     await signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         const user = userCredential.user;
-        setUser(user)
-        console.log(user.displayName)
-        setProfileDetails(user && user.displayName || '')
+
+        const ProfileRef = doc(collection(db, 'users'), user.uid);
+        onSnapshot(ProfileRef, (doc) => {
+          const data = doc.data();
+          setUser({
+            ...user,
+            firstName: data.profile.firstName || '',
+            lastName: data.profile.lastName || '',
+          })
+        })
         navigate('/')
         toast({
           title: "Login Successful",
@@ -144,45 +181,49 @@ export function UserProvider({ children }) {
         const credential = GoogleAuthProvider.credentialFromResult(result);
         const token = credential.accessToken; //eslint-disable-line
         const user = result.user;
-        navigate('/');
-        setUser(user);
 
-        const usersRef = collection(db, "users");
-        const newUserRef = doc(usersRef, user.uid);
-        console.log(user)
-        setDoc(newUserRef, {
-          uid: user.uid,
-          username: user.displayName,
-          email: user.email,
-          // password: password,
-          profile: {
-            firstName: user.firstName || "",
-            lastName: user.lastName || '',
-          }
-        }).then(() => {
-          setProfile(
-            {
-              uid: user.uid,
-              displayName: user.displayName,
-              firstName: user.firstName || '',
+        if (usernames.includes(user.displayName)) {
+          console.log("Username already exists");
+        } else {
+          setUser(user);
+          const usersRef = collection(db, "users");
+          const newUserRef = doc(usersRef, user.uid);
+          console.log(user)
+          setDoc(newUserRef, {
+            uid: user.uid,
+            displayName: user.displayName || '',
+            email: user.email,
+            profile: {
+              firstName: user.firstName || "",
               lastName: user.lastName || '',
-              email: user.email,
+              location: user.location || ''
             }
-          )
-          console.log("User Added!");
-        })
+          }).then(() => {
+            navigate('/');
+            console.log("User Added!");
+          })
+        }
       });
     } catch (error) {
       console.log(error);
     }
   };
 
+  const getUsernames = async () => {
+    const q = query(collection(db, "usernames"));
+    const querySnapshot = await getDocs(q);
+    const usernames = [];
+    querySnapshot.forEach((doc) => {
+      usernames.push(doc.data().displayName);
+    });
+    setUsernames(usernames);
+  };
 
   useEffect(() => {
+    getUsernames();
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser)
     });
-
 
     return () => {
       unsubscribe();
@@ -190,7 +231,7 @@ export function UserProvider({ children }) {
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <UserContext.Provider value={{ user, setUser, profile, setProfile, setProfileDetails, login, createUser, googleLogin, facebookLogin }}>
+    <UserContext.Provider value={{ user, setUser, updateCurrentUser, login, createUser, googleLogin, facebookLogin, updateProfileDetails, usernames, getUsernames }}>
       {children}
     </UserContext.Provider>
   )

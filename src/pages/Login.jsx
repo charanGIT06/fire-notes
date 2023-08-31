@@ -115,7 +115,7 @@ const Login = () => {
                       }
                       } />
                     <InputRightElement>
-                      <IconButton variant='ghost' size='sm' aria-label='show password' icon={showPassword ? <BsEyeFill /> : <BsEye />} onClick={() => { setShowPassword(!showPassword) }} />
+                      <IconButton isRound={true} variant='ghost' colorScheme={theme === 'dark' ? 'whiteAlpha' : 'gray'} size='sm' aria-label='show password' icon={showPassword ? <BsEyeFill /> : <BsEye />} onClick={() => { setShowPassword(!showPassword) }} />
                     </InputRightElement>
                   </InputGroup>
                 </FormControl>

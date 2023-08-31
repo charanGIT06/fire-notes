@@ -31,7 +31,7 @@ const CollaboratorPopover = ({ trigger, header, body, footer, alert }) => {
         <PopoverCloseButton />
         <PopoverHeader>{header}</PopoverHeader>
         <PopoverBody>
-          {body}
+          {/* {body} */}
 
           <Alert status='info' className='my-2 rounded text-dark'>
             <AlertIcon />
