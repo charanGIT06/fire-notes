@@ -69,7 +69,7 @@ const Archive = () => {
         <SideNav />
 
         <div className="main-content py-3 col-12 col-md-10">
-          <NotesContainer notes={archiveNotes} searchText={searchText} setModalData={setModalData} onOpen={onOpen} />
+          <NotesContainer notes={archiveNotes} searchText={searchText} setModalData={setModalData} onOpen={onOpen} from={'archive'} />
         </div>
 
         <ArchiveModal

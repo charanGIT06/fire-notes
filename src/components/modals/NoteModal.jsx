@@ -55,70 +55,82 @@ const NoteModal = ({
 
   const [collaborator, setCollaborator] = useState('')
 
-  const handleClick = async () => {
-    let newCollaborator = {}
-    if (collaborator === '') {
-      setAlert({
-        alert: true,
-        status: 'error',
-        message: 'Please enter an email'
-      })
-      return
-    } else if (collaborator === user.email) {
-      setAlert({
-        alert: true,
-        status: 'error',
-        message: 'You cannot add yourself as a collaborator'
-      })
-
-    } else {
-      await firestoreFunctions.getUserFromEmail(collaborator).then((c) => {
-        newCollaborator = c
-      })
-
-      if (newCollaborator === 'none') {
-        console.log('User not found')
-        setAlert({
-          alert: true,
-          status: 'error',
-          message: 'User not found'
-        })
-      } else {
-        const sharedDoc = doc(db, 'notes', newCollaborator.uid, 'shared', currentNote.id)
-        await setDoc(sharedDoc, {
-          ...currentNote,
-          owner: {
-            uid: user.uid,
-            sample: '',
-            email: user.email,
-            displayName: user.displayName,
-          }
-        }).then(() => {
-          console.log('Added to shared notes')
-        })
-
-        const sharedNoteRef = doc(db, 'notes', user.uid, 'active', currentNote.id)
-        setCurrentNoteChanged(true)
-        setCurrentNote({
-          ...currentNote,
-          collaborators: [...currentNote.collaborators || [], newCollaborator]
-        })
-
-        await updateDoc(sharedNoteRef, {
-          collaborators: [...currentNote.collaborators || [], newCollaborator]
-        }).then(() => {
-          console.log('Added to collaborators')
-          let prevAlertState = alert.status === 'success' ? true : false
-          setAlert({
-            alert: true,
-            status: 'success',
-            message: (!prevAlertState ? 'User found. Added collaborator.' : 'Added collaborator.')
-          })
-          getNotes('active')
-        })
-      }
-    }
+  const handleClick = () => {
   }
+  // const handleClick = async () => {
+  //   let newCollaborator = {}
+  //   if (collaborator === '') {
+  //     setAlert({
+  //       alert: true,
+  //       status: 'error',
+  //       message: 'Please enter an email'
+  //     })
+  //     return
+  //   } else if (collaborator === user.email) {
+  //     setAlert({
+  //       alert: true,
+  //       status: 'error',
+  //       message: 'You cannot add yourself as a collaborator'
+  //     })
+
+  //   } else {
+  //     await firestoreFunctions.getUserFromEmail(collaborator).then((user) => {
+  //       console.log(user)
+  //       setCollaborator({
+  //         uid: user.uid,
+  //         email: user.email || '',
+  //         // displayName: user.displayName || '',
+  //       })
+  //     })
+
+  //     if (collaborator === 'none') {
+  //       console.log('User not found')
+  //       setAlert({
+  //         alert: true,
+  //         status: 'error',
+  //         message: 'User not found'
+  //       })
+  //     } else {
+  //       const sharedDoc = doc(db, 'notes', collaborator.uid, 'shared', currentNote.id)
+  //       await setDoc(sharedDoc, {
+  //         ...currentNote,
+  //         owner: {
+  //           uid: user.uid,
+  //           email: user.email || '',
+  //           // displayName: user.displayName || '',
+  //         }
+  //       }).then(() => {
+  //         console.log('Added to shared notes')
+  //       })
+  //       const sharedNoteRef = doc(db, 'notes', user.uid, 'active', currentNote.id)
+  //       setCurrentNoteChanged(true)
+  //       console.log(collaborator)
+  //       setCurrentNote({
+  //         ...currentNote,
+  //         collaborators: [{
+  //           uid: collaborator.uid,
+  //           email: collaborator.email || '',
+  //         }, currentNote.collaborators?.(...currentNote.collaborators)]
+  //       })
+
+  //       // await updateDoc(sharedNoteRef, {
+  //       //   collaborators: [{
+  //       //     uid: collaborator.uid,
+  //       //     email: collaborator.email || '',
+  //       //   }, currentNote.collaborators?.(...currentNote.collaborators)]
+  //       // }).then(() => {
+  //       //   console.log('Added to collaborators')
+  //       //   let prevAlertState = alert.status === 'success' ? true : false
+  //       //   setAlert({
+  //       //     alert: true,
+  //       //     status: 'success',
+  //       //     message: (!prevAlertState ? 'User found. Added collaborator.' : 'Added collaborator.')
+  //       //   })
+  //       //   getNotes('active')
+  //       // })
+  //     }
+  //   }
+  // }
 
   window.addEventListener('popstate', () => {
     if (isOpen === true) {
@@ -183,8 +195,8 @@ const NoteModal = ({
               <div className="collaborators d-flex flex-row align-items-center mb-2 ps-2 w-100">
                 {currentNote.collaborators && currentNote.collaborators.map((collaborator, index) => {
                   return (
-                    <Tooltip label={collaborator.displayName + '\n' + collaborator.email} placement="top" hasArrow='true' key={index}>
-                      <Avatar className='me-1' size={'sm'} name={collaborator.displayName} src={collaborator.sample} />
+                    <Tooltip label={collaborator.displayName || '' + '\n' + collaborator.email} placement="top" hasArrow='true' key={index}>
+                      <Avatar className='me-1' size={'sm'} name={collaborator.email} src={collaborator.sample} />
                     </Tooltip>
                   )
                 })}

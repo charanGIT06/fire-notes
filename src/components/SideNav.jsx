@@ -7,8 +7,12 @@ import { useLocation } from 'react-router-dom';
 const SideNav = () => {
   const { theme, toggleTheme } = ThemeState();
 
-
   const location = useLocation()
+  const page = location.pathname.split('/')
+  let pageName = '/'+page[page.length - 1]
+  if (pageName === '/notes') {
+    pageName = '/'
+  } 
 
   return (
     <div className={`side-nav col-2 d-none d-md-block py-4 ${theme === 'dark' ? 'bg-dark text-white' : 'bg-white'}`}>
@@ -17,7 +21,7 @@ const SideNav = () => {
           {[['/', 'Notes'], ['/shared', 'Shared'], ['/archive', 'Archive'], ['/trash', 'Trash'], ['/profile', 'Profile']].map(([route, text]) => {
             return (
               <Link to={route} key={text}>
-                <p className={`link px-3 py-3 m-0 ${location.pathname === route ? 'link-active text-dark' : ''}`}>{text}</p>
+                <p className={`link px-3 py-3 m-0 ${pageName === route ? 'link-active text-dark' : ''}`}>{text}</p>
               </Link>
             )
           })}

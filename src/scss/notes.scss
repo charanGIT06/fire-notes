@@ -106,3 +106,30 @@
   bottom: 15px;
   right: 15px;
 }
+.note-card {
+  width: 100%;
+  .heading {
+    font-weight: 700;
+    font-size: 1.5rem;
+  }
+}
+.card-heading, .card-footer {
+  height: 15%;
+}
+.card-content {
+  height: 70%;
+  overflow-y: auto;
+}
+.card-footer {
+  .left {
+    overflow-y: auto;
+  }
+}
+.note-textarea {
+  height: 100% !important;
+  overflow-y: auto;
+  resize: none;
+}
+.add-collaborator {
+  border-radius: 5px;
+}

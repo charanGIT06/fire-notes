@@ -52,17 +52,19 @@ const Notes = () => {
 		} else {
 			try {
 				// Updating the note in the active collection
+				// console.log(currentNote)
 				const activeNoteRef = doc(collection(db, 'notes', user.uid, 'active'), currentNote.id)
-				await updateDoc(activeNoteRef, currentNote)
+				await updateDoc(activeNoteRef, currentNote).then(() => {
 
-				// Updating the note for collaborators
-				currentNote.collaborators.forEach(async collaborator => {
-					const sharedDoc = doc(db, 'notes', collaborator.uid, 'shared', currentNote.id)
-					await updateDoc(sharedDoc, {
-						...currentNote,
-					})
-				});
-
+					// Updating the note for collaborators
+					currentNote.collaborators.forEach(collaborator => {
+						const sharedDoc = doc(db, 'notes', collaborator.uid, 'shared', currentNote.id)
+						console.log(collaborator.uid, currentNote.id)
+						updateDoc(sharedDoc, {
+							...currentNote,
+						})
+					});
+				})
 				setCurrentNote({})
 				setCurrentNoteChanged(false)
 
@@ -195,7 +197,7 @@ const Notes = () => {
 							</div> */}
 						</div>
 						{/* <Toolbar /> */}
-						<NotesContainer notes={activeNotes} searchText={searchText} setModalData={setModalData} onOpen={onOpen} />
+						<NotesContainer notes={activeNotes} searchText={searchText} setModalData={setModalData} onOpen={onOpen} from={'notes'} />
 					</div>
 				</div>
 				<div className="note-modal" onKeyUp={(e) => { if (e.key === 'Escape') { updateNote() } }}>

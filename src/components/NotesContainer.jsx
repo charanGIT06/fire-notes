@@ -1,8 +1,10 @@
 import Note from "./Note";
 import '../scss/notes.scss'
 import PropTypes from "prop-types";
+import { useNavigate } from "react-router-dom";
+import NotesState from "../context/NotesContext";
 
-const NotesContainer = ({ notes, searchText, setModalData, onOpen }) => {
+const NotesContainer = ({ notes, searchText, setModalData, onOpen, from }) => { // eslint-disable-line no-unused-vars
 	NotesContainer.propTypes = {
 		notes: PropTypes.arrayOf(PropTypes.shape({
 			id: PropTypes.string,
@@ -13,7 +15,11 @@ const NotesContainer = ({ notes, searchText, setModalData, onOpen }) => {
 		searchText: PropTypes.string,
 		setModalData: PropTypes.func,
 		onOpen: PropTypes.func,
+		from: PropTypes.string
 	};
+
+	const navigate = useNavigate();
+	const { setPresentNote } = NotesState()
 
 	return (
 		<div className="pb-3 container px-4 w-100">
@@ -30,8 +36,10 @@ const NotesContainer = ({ notes, searchText, setModalData, onOpen }) => {
 								className="col-6 col-md-4 col-lg-3 p-2"
 								key={note.id}
 								onClick={() => {
-									setModalData(note)
-									onOpen()
+									// setModalData(note)
+									// onOpen()
+									setPresentNote(note)
+									navigate(`/pnote/${from}`)
 								}}
 							>
 								<Note note={note} />

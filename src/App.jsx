@@ -15,6 +15,7 @@ import { NotesProvider } from './context/NotesContext.jsx'
 import Login from './pages/Login.jsx'
 import Signup from './pages/Signup.jsx'
 import Shared from './pages/Shared.jsx'
+import PresentNote from './pages/PresentNote.jsx'
 import ProtectedRoute from './components/ProtectedRoute.jsx'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
@@ -34,6 +35,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                     <Route path="/archive" element={<Archive />} />
                     <Route path="/trash" element={<Trash />} />
                     <Route path="/shared" element={<Shared />} />
+                    <Route path="/pnote/:page" element={<PresentNote />}/>
                     <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
                     {/* <Route path="/test" element={<Test />} /> */}
                   </Routes>
