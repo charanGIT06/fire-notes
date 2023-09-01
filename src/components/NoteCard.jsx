@@ -78,7 +78,7 @@ const NoteCard = ({ page }) => {
 
   useEffect(() => {
     setPresentNote(presentNote)
-  }, [presentNote])
+  }, [presentNote]) //eslint-disable-line
 
   return (
     <div className={`note-card my-1 px-3 py-2 ${theme === 'dark' ? 'bg-dark text-white' : 'bg-white'}`}>

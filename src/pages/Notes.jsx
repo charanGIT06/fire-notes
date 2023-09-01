@@ -32,7 +32,7 @@ const Notes = () => {
 	// const [notes, setNotes] = useState([])
 	const { activeNotes, getNotes } = NotesState()
 	const notes = activeNotes.filter((note) => {
-		if (note.isPinned === false) {
+		if (note.isPinned === false || note.isPinned === undefined) {
 			return note
 		}
 	})
