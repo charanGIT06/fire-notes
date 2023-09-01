@@ -11,8 +11,6 @@ import UserAuth from '../context/UserContext';
 import NoteModal from '../components/modals/NoteModal';
 import ThemeState from '../context/ThemeContext';
 import NotesState from '../context/NotesContext';
-import Toolbar from '../components/Toolbar'; // eslint-disable-line no-unused-vars
-import { BiPlus } from 'react-icons/bi'; // eslint-disable-line no-unused-vars
 import { useNavigate } from 'react-router-dom';
 
 const Notes = () => {
@@ -28,11 +26,21 @@ const Notes = () => {
 	const { theme } = ThemeState()
 
 	// Props
-	const { isOpen, onOpen, onClose } = useDisclosure()
+	const { isOpen, onClose } = useDisclosure()
 
 	// Notes
 	// const [notes, setNotes] = useState([])
 	const { activeNotes, getNotes } = NotesState()
+	const notes = activeNotes.filter((note) => {
+		if (note.isPinned === false) {
+			return note
+		}
+	})
+	const pinnedNotes = activeNotes.filter((note) => {
+		if (note.isPinned === true) {
+			return note
+		}
+	})
 
 	// Current Note
 	const [currentNote, setCurrentNote] = useState({})
@@ -122,10 +130,12 @@ const Notes = () => {
 				const newNoteRef = doc(collection(db, 'notes'), user.uid)
 				const activeNotesCollection = collection(newNoteRef, 'active')
 				await addDoc(activeNotesCollection, {
+					...newNote,
 					uid: user.uid,
 					timestamp: time,
 					collaborators: [],
-					...newNote,
+					labels: [],
+					isPinned: false,
 				}).then(() => {
 					setNewNote({})
 					setNewNoteChanged(false)
@@ -197,7 +207,14 @@ const Notes = () => {
 							</div> */}
 						</div>
 						{/* <Toolbar /> */}
-						<NotesContainer notes={activeNotes} searchText={searchText} setModalData={setModalData} onOpen={onOpen} from={'notes'} />
+						<div className="pinned px-4">
+							<h6 className='mb-2'>Pinned</h6>
+							<NotesContainer notes={pinnedNotes} searchText={searchText} from={'notes'} />
+						</div>
+						<div className="normal-notes px-4">
+							<h6 className='mb-2'>Notes</h6>
+							<NotesContainer notes={notes} searchText={searchText} from={'notes'} />
+						</div>
 					</div>
 				</div>
 				<div className="note-modal" onKeyUp={(e) => { if (e.key === 'Escape') { updateNote() } }}>

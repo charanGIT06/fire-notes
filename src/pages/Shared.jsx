@@ -97,7 +97,7 @@ const Shared = () => {
         <div className="main-section col-12 col-md-10 py-3">
           <div className="main-content">
             <div className="header d-flex align-items-center mb-3">
-              <h5 className="ms-3 w-100">Shared</h5>
+              <h5 className="ms-3 w-100">Shared with you</h5>
               <Tooltip title="Refresh" placement="bottom">
                 <IconButton icon={<MdRefresh />} className="me-3" isRound={true} onClick={() => {
                   if (user) {

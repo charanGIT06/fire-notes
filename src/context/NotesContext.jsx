@@ -1,9 +1,8 @@
 import { useContext, createContext, useState, useEffect } from 'react';
 import propTypes from 'prop-types'
-import { collection, deleteDoc, doc, getDocs, orderBy, query, setDoc, updateDoc, where } from 'firebase/firestore';
+import { collection, deleteDoc, doc, getDocs, orderBy, query, setDoc, updateDoc } from 'firebase/firestore';
 import firebase from '../js/firebase.js';
 import UserAuth from './UserContext';
-import { useToast } from '@chakra-ui/react';
 
 const NotesContext = createContext();
 
@@ -14,7 +13,6 @@ export function NotesProvider({ children }) {
 
   const db = firebase.db
   const { user } = UserAuth()
-  const toast = useToast()
 
   const [activeNotes, setActiveNotes] = useState([])
   const [archiveNotes, setArchiveNotes] = useState([])
@@ -25,10 +23,19 @@ export function NotesProvider({ children }) {
   const updateNote = async () => {
     try {
       const noteRef = doc(collection(db, 'notes', user.uid, 'active'), presentNote.id);
-      await updateDoc(noteRef, presentNote).then(() => {
+      await setDoc(noteRef, presentNote).then(() => {
         // console.log('Document successfully updated!');
         getNotes('active')
       });
+
+      // Update this note for all the collaborators
+      presentNote?.collaborators?.forEach(async (collaborator) => {
+        const collaboratorNoteRef = doc(collection(db, 'notes', collaborator.uid, 'shared'), presentNote.id);
+        await setDoc(collaboratorNoteRef, presentNote).then(() => {
+          // console.log('Document successfully updated!');
+          getNotes('shared')
+        });
+      })
     } catch (error) {
       console.log('error', error)
     }
@@ -105,81 +112,70 @@ export function NotesProvider({ children }) {
     }
   }
 
-  const shareNote = async (email, permission) => {
-    if (email === '') {
-      return 'Email is required!'
-    } else {
-      console.log('email', email)
+  const updateCurrentNote = async (person) => {
+    console.log('2. Executing updateCurrentNote')
+    const noteRef = doc(collection(db, 'notes', user.uid, 'active'), presentNote.id);
+    await updateDoc(noteRef, {
+      ...presentNote,
+      collaborators: [...presentNote.collaborators, person]
+    }).then(() => {
+      setPresentNote({
+        ...presentNote,
+        collaborators: [...presentNote.collaborators, person]
+      })
+      console.log('Document successfully updated!');
+      getNotes('active')
+    }).catch((error) => {
+      console.log(error)
+    })
+    getNotes('active')
+  }
 
-      let sharedPerson = {}
-      const usersRef = query(collection(db, 'users'), where('email', '==', email))
-      await getDocs(usersRef).then(
-        (querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            sharedPerson = { id: doc.id, ...doc.data() }
-          })
+  const shareNote = async (person, permission) => {
+    console.log("1. Executing Share Note")
+    if (!person) {
+      return 'Invalid Data!'
+    } else {
+      console.log(person)
+
+      if (person.uid === undefined) {
+        return 'User not found!'
+      } else if (person.uid === presentNote.uid) {
+        return 'You cannot share with yourself!'
+      } else if (presentNote.collaborators.length > 0) {
+        const isAlreadyShared = presentNote.collaborators.find((collaborator) => collaborator.uid === person.uid)
+        if (isAlreadyShared) {
+          console.log('User already has access to this note!')
+          return 'User already has access to this note!'
         }
-      ).catch((error) => {
+      }
+      const sharedNotesRef = collection(db, 'notes', person.uid, 'shared')
+      const sharedNote = doc(sharedNotesRef, presentNote.id)
+      await setDoc(sharedNote, {
+        ...presentNote,
+        permission: {
+          canEdit: permission,
+        },
+        collaborators: [],
+        owner: {
+          displayName: user.displayName,
+          email: user.email,
+          uid: user.uid,
+        }
+      }).catch((error) => {
         console.log(error)
       })
 
-      if (sharedPerson.uid === undefined) {
-        return 'User not found!'
-      } else if (sharedPerson.uid === presentNote.uid) {
-        return 'You cannot share with yourself!'
-      } else if (presentNote.collaborators.length > 0) {
-        const isAlreadyShared = presentNote.collaborators.find((collaborator) => collaborator.uid === sharedPerson.uid)
-        if (isAlreadyShared) {
-          return 'User already has access to this note!'
-        } 
-      } else {
-        await updateDoc(doc(collection(db, 'notes', user.uid, 'active'), presentNote.id), {
-          ...presentNote,
-          collaborators: [...presentNote.collaborators, {
-            displayName: sharedPerson.displayName,
-            email: sharedPerson.email,
-            uid: sharedPerson.uid,
-            permission: {
-              canEdit: permission,
-            }
-          }]
-        }).then(() => {
-          toast({
-            title: 'Note shared!',
-            status: 'success',
-            duration: 3000,
-            isClosable: true,
-          })
-        }).catch((error) => {
-          console.log(error)
-        })
-
-        const sharedNotesRef = collection(db, 'notes', sharedPerson.uid, 'shared')
-        const sharedNote = doc(sharedNotesRef, presentNote.id)
-        await setDoc(sharedNote, {
-          ...presentNote,
-          permission: {
-            canEdit: permission,
-          },
-          collaborators: [],
-          owner: {
-            displayName: user.displayName,
-            email: user.email,
-          }
-        }).then(() => {
-          toast({
-            title: 'Note shared!',
-            status: 'success',
-            duration: 3000,
-            isClosable: true,
-          })
-        }).catch((error) => {
-          console.log(error)
-        })
-      }
-
-      return 'success'
+      await updateCurrentNote({
+        displayName: person.displayName,
+        email: person.email,
+        uid: person.uid,
+        permission: {
+          canEdit: permission,
+        }
+      })
     }
+    return 'success'
   }
 
   const getNotes = async (page) => {

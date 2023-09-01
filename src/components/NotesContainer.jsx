@@ -25,7 +25,7 @@ const NotesContainer = ({ notes, searchText, setModalData, onOpen, from }) => { 
 	const { isOpen, onToggle } = useDisclosure()
 
 	useEffect(() => {
-			onToggle()
+		onToggle()
 	}, [])
 
 	return (

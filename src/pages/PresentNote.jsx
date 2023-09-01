@@ -21,7 +21,7 @@ const PresentNote = () => {
     <div className={`notes-page ${theme === 'dark' ? 'bg-dark text-white' : 'bg-white'}`}>
       <div className="main-app d-flex flex-row p-0 m-0">
         <SideNav />
-        <NoteCard note={presentNote} page={page.page} />
+        <NoteCard page={page.page} />
       </div>
     </div>
   )

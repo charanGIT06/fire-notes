@@ -126,10 +126,22 @@
   }
 }
 .note-textarea {
-  height: 100% !important;
+  height: 80% !important;
   overflow-y: auto;
   resize: none;
 }
 .add-collaborator {
   border-radius: 5px;
+}
+.collaborators, .tags {
+  overflow-x: auto;
+}
+.shared-card {
+  border: 2px solid gray;
+  border-radius: 30px;
+
+  .person {
+    background-color: #feae3b;
+    border-radius: 20px;
+  }
 }
