@@ -81,7 +81,7 @@ const NoteCard = ({ page }) => {
   }, [presentNote]) //eslint-disable-line
 
   return (
-    <div className={`note-card my-1 px-3 py-2 ${theme === 'dark' ? 'bg-dark text-white' : 'bg-white'}`}>
+    <div className={`note-card my-1 px-1 py-1 px-md-3 py-md-2 ${theme === 'dark' ? 'bg-dark text-white' : 'bg-white'}`}>
       <div style={{ height: '100%', border: '2px solid gray', borderRadius: '20px' }} className='m-0 px-3'>
         <div className="card-heading d-flex flex-row justify-content-between align-items-center">
           <Input type="text" variant='unstyled' isReadOnly={page==='shared' ? true : false} className='note-title heading' defaultValue={presentNote.title} onChange={(e) => setPresentNote({

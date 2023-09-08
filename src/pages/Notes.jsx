@@ -207,11 +207,11 @@ const Notes = () => {
 							</div> */}
 						</div>
 						{/* <Toolbar /> */}
-						<div className="pinned px-4">
+						<div className="pinned px-3 px-md-4">
 							<h6 className='mb-2'>Pinned</h6>
 							<NotesContainer notes={pinnedNotes} searchText={searchText} from={'notes'} />
 						</div>
-						<div className="normal-notes px-4">
+						<div className="normal-notes px-3 px-md-4">
 							<h6 className='mb-2'>Notes</h6>
 							<NotesContainer notes={notes} searchText={searchText} from={'notes'} />
 						</div>

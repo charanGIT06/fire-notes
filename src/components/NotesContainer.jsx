@@ -29,7 +29,7 @@ const NotesContainer = ({ notes, searchText, setModalData, onOpen, from }) => { 
 	}, [])
 
 	return (
-		<div className="pb-3 container px-4 w-100">
+		<div className="pb-3 container px-1 px-md-4 w-100">
 			<div className="row d-flex flex-row">
 				{
 					notes.filter((note) => {
@@ -40,7 +40,7 @@ const NotesContainer = ({ notes, searchText, setModalData, onOpen, from }) => { 
 					}).map((note) => {
 						return (
 							<div
-								className="col-6 col-md-4 col-lg-3 p-2"
+								className="col-6 col-md-4 col-lg-3 p-1"
 								key={note.id}
 								onClick={() => {
 									// setModalData(note)
