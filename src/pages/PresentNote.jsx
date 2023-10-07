@@ -5,11 +5,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useEffect } from "react";
 import NoteCard from "../components/NoteCard";
 import {
-  Slide,
   useDisclosure,
-  Button,
   SlideFade,
-  Collapse,
 } from "@chakra-ui/react";
 
 const PresentNote = () => {
@@ -43,7 +40,7 @@ const PresentNote = () => {
           in={isOpen}
           offsetY='100px'
           className='w-100 mx-2 mx-md-3'
-          transition={{ enter: ".5s" }}
+          transition={{ enter: ".5s", exit: "1s" }}
         >
           <NoteCard page={page.page} />
         </SlideFade>

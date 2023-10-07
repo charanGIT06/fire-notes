@@ -13,6 +13,8 @@ export default defineConfig({
         description: "A simple notes app built with React and Firebase",
         background_color: "#212529",
         theme_color: "#212529",
+        navigation_color: "#212529",
+        navigation_color_dark: "#red",
         display: "standalone",
         start_url: "https://fire-notes.netlify.app/",
         scope: "/",
