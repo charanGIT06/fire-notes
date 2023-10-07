@@ -68,7 +68,7 @@ const Trash = () => {
     <div className={`trash-page  ${theme === 'dark' ? 'dark-theme text-white' : 'light-theme'}`}>
       <div className="main-app container-fluid d-flex flex-row p-0 m-0">
         <SideNav />
-        <div className="main-section py-3 col-12 col-md-10 px-4 px-md-3">
+        <div className="main-section py-3 col-12 col-md-10 px-3 px-md-3">
           <h5 className='mb-2'>Trash</h5>
           <NotesContainer notes={trashNotes} searchText={searchText} setModalData={setModalData} onOpen={onOpen} from={'trash'} />
         </div>
