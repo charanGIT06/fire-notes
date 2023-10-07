@@ -1,30 +1,55 @@
-import SideNav from "../components/SideNav"
-import NotesState from "../context/NotesContext"
-import ThemeState from "../context/ThemeContext"
-import { useNavigate, useParams } from "react-router-dom"
-import { useEffect } from "react"
-import NoteCard from "../components/NoteCard"
+import SideNav from "../components/SideNav";
+import NotesState from "../context/NotesContext";
+import ThemeState from "../context/ThemeContext";
+import { useNavigate, useParams } from "react-router-dom";
+import { useEffect } from "react";
+import NoteCard from "../components/NoteCard";
+import {
+  Slide,
+  useDisclosure,
+  Button,
+  SlideFade,
+  Collapse,
+} from "@chakra-ui/react";
 
 const PresentNote = () => {
-  const { presentNote } = NotesState()
-  const { theme } = ThemeState()
-  const navigate = useNavigate()
-  let page = useParams()
+  const { presentNote } = NotesState();
+  const { theme } = ThemeState();
+  const navigate = useNavigate();
+  let page = useParams();
+  const { isOpen, onToggle } = useDisclosure();
 
   useEffect(() => {
     if (!presentNote.id) {
-      navigate(`/${page.page === 'notes' ? '' : page.page}`)
+      navigate(`/${page.page === "notes" ? "" : page.page}`);
     }
-  })
+  });
+
+  useEffect(() => {
+    if (presentNote.id) {
+      onToggle();
+    }
+  }, []);
 
   return (
-    <div className={`notes-page ${theme === 'dark' ? 'bg-dark text-white' : 'bg-white'}`}>
-      <div className="main-app d-flex flex-row p-0 m-0">
+    <div
+      className={`notes-page ${
+        theme === "dark" ? "dark-theme" : "light-theme"
+      }`}
+    >
+      <div className='main-app d-flex flex-row p-0 m-0'>
         <SideNav />
-        <NoteCard page={page.page} />
+        <SlideFade
+          in={isOpen}
+          offsetY='100px'
+          className='w-100 mx-2 mx-md-3'
+          transition={{ enter: ".5s" }}
+        >
+          <NoteCard page={page.page} />
+        </SlideFade>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default PresentNote
+export default PresentNote;

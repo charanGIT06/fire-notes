@@ -10,10 +10,8 @@ const Note = ({ note }) => {
 	const { theme } = ThemeState()
 
 	return (
-		<div className='card notecard'>
-			<Card size="md" style={theme === 'dark' ? {
-				border: '1px solid grey',
-			} : {}} className={`notecard ${theme === 'dark' ? 'bg-dark text-white' : 'bg-white'}`}>
+		<div className='notecard'>
+			<Card size="md" className={`notecard  ${theme === 'dark' ? 'dark-element' : 'light-element'}`}>
 				<CardHeader className="ncard-header pt-3 pb-1">
 					<Heading size="md" noOfLines={1}>{note.title}</Heading>
 				</CardHeader>

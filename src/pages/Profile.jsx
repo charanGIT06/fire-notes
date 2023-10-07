@@ -44,22 +44,20 @@ const Profile = () => {
   }
 
   return (
-    <div className={`profile-page ${theme === 'dark' ? 'bg-dark text-white' : 'bg-white'}`}>
+    <div className={`profile-page  ${theme === 'dark' ? 'dark-theme text-white' : 'light-theme'}`}>
       <div className="main-app container-fluid d-flex flex-row p-0 m-0">
         <SideNav />
-        <div className="main-section col-12 col-md-10 p-4">
+        <div className="main-section col-12 col-md-10 p-2 p-md-4">
           <div className="main-content">
             <div className="my-profile">
               <h6>My Profile</h6>
-              <Card className={`mt-3 ${theme === 'dark' ? 'bg-dark text-white' : 'bg-white'}`} style={theme === 'dark' ? {
-                border: '1px solid #e2e8f0',
-              } : {}}>
+              <Card className={`mt-3 profile-card ${theme === 'dark' ? 'dark-element' : 'light-element'}`} >
                 <CardBody>
-                  <div className="section-1 d-flex flex-column flex-md-row align-items-center p-3">
+                  <div className="section-1 d-flex flex-column flex-md-row align-items-center p-3 p-md-3">
                     <div className="profile-img">
                       <Avatar name={user.displayName} size='xl' />
                     </div>
-                    <div className="basic-info ps-4 w-100 my-3">
+                    <div className="basic-info ps-0 ps-md-4 w-100 my-3">
                       <div className="name">
                         <h5 className='pb-2 mb-0'>{user.firstName} {user.lastName}</h5>
                       </div>
@@ -80,15 +78,13 @@ const Profile = () => {
               </Card>
               <div className="personal-details mt-4">
                 <h6>Personal Details</h6>
-                <Card className={`mt-3 ${theme === 'dark' ? 'bg-dark text-white' : 'bg-white'}`} style={theme === 'dark' ? {
-                  border: '1px solid #e2e8f0',
-                } : {}}>
+                <Card className={`mt-3 profile-card ${theme === 'dark' ? 'dark-element' : 'light-element'}`}>
                   <CardBody>
                     <form onSubmit={(e) => {
                       e.preventDefault();
                       handleSubmit();
                     }}>
-                      <div className="section-2 px-3 d-flex flex-column">
+                      <div className="section-2 px-3 px-md-3 py-3 d-flex flex-column">
                         <div className="user-details d-flex flex-column flex-md-row">
                           <div className="inputs pt-2 w-100">
                             <div className="username mb-4">
@@ -135,9 +131,7 @@ const Profile = () => {
               </div>
               <div className="account-actions mt-4">
                 <h6>Links</h6>
-                <Card className={`mt-3 ${theme === 'dark' ? 'bg-dark text-white' : 'bg-white'}`} style={theme === 'dark' ? {
-                  border: '1px solid #e2e8f0',
-                } : {}}>
+                <Card className={`mt-3 profile-card ${theme === 'dark' ? 'dark-element' : 'light-element'}`}>
                   <CardBody>
                     <div className="section-3 px-3 pt-2">
                       <div className="btn-container">

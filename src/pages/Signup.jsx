@@ -145,11 +145,11 @@ const Signup = () => {
   }, [profile.displayName]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <div className={`signup-page main-section d-flex flex-column flex-md-row ${theme === 'dark' ? 'bg-dark text-white' : 'bg-light text-dark'}`}>
+    <div className={`signup-page main-section d-flex flex-column flex-md-row ${theme === 'dark' ? 'dark-theme text-white' : 'light-theme'}`}>
       <Banner />
-      <div className={`signup-right   w-100 ${theme === 'dark' ? 'bg-dark text-white' : ''}`}>
+      <div className={`signup-right   w-100 ${theme === 'dark' ? 'bg-dark text-white' : ''} ${theme === 'dark' ? 'dark-theme text-white' : 'light-theme'}`}>
         <div className="signup-container px-0 py-5 d-flex flex-row justify-content-center align-items-center">
-          <Card size='md' className={`signup-card w-75 p-md-3 p-sm-1 ${theme === 'dark' ? 'bg-dark text-white' : 'bg-light text-dark'}`} border={theme == 'dark' ? '1px' : '0px'}>
+          <Card size='md' className={`signup-card w-75 p-md-3 p-sm-1 ${theme === 'dark' ? 'dark-element' : 'light-element'}`}>
             <CardBody>
               <div className="heading">
                 <Heading size='lg' className="signup-heading">Signup</Heading>
@@ -162,7 +162,7 @@ const Signup = () => {
                 }}>
                   <FormControl isRequired isInvalid={error.userNameError} className='mb-2'>
                     <FormLabel>Username</FormLabel>
-                    <Input id='displayName' focusBorderColor='yellow.400' type='text' placeholder='Enter your username' onChange={(e) => {
+                    <Input className='input' id='displayName' focusBorderColor='yellow.400' type='text' placeholder='Enter your username' onChange={(e) => {
                       setProfile({
                         ...profile,
                         displayName: e.target.value
@@ -177,10 +177,10 @@ const Signup = () => {
                       : null
                     }
                   </FormControl>
-                  <div className="name d-flex flex-row">
-                    <FormControl isRequired isInvalid={error.firstNameError} className='mb-2 me-1 w-50'>
+                  <div className="name d-flex flex-column flex-md-row mt-2">
+                    <FormControl isRequired isInvalid={error.firstNameError} className='mb-2 me-1'>
                       <FormLabel>First Name</FormLabel>
-                      <Input id='firstName' focusBorderColor='yellow.400' type='text' placeholder='Enter your first name' onChange={(e) => {
+                      <Input id='firstName' className='input' focusBorderColor='yellow.400' type='text' placeholder='Enter your first name' onChange={(e) => {
                         setProfile({
                           ...profile,
                           firstName: e.target.value
@@ -191,9 +191,9 @@ const Signup = () => {
                         })
                       }} />
                     </FormControl>
-                    <FormControl isRequired isInvalid={error.lastNameError} className='ms-1 mb-2 w-50'>
+                    <FormControl isRequired isInvalid={error.lastNameError} className='ms-1 mb-2'>
                       <FormLabel>Last Name</FormLabel>
-                      <Input id='lastName' focusBorderColor='yellow.400' type='text' placeholder='Enter your last name' onChange={(e) => {
+                      <Input id='lastName' className='input' focusBorderColor='yellow.400' type='text' placeholder='Enter your last name' onChange={(e) => {
                         setProfile({
                           ...profile,
                           lastName: e.target.value
@@ -207,7 +207,7 @@ const Signup = () => {
                   </div>
                   <FormControl isRequired isInvalid={error.emailError} className='mb-2'>
                     <FormLabel >Email</FormLabel>
-                    <Input id='email' focusBorderColor='yellow.400' type='email' placeholder='Enter your email' onChange={(e) => {
+                    <Input id='email' className='input' focusBorderColor='yellow.400' type='email' placeholder='Enter your email' onChange={(e) => {
                       setProfile({
                         ...profile,
                         email: e.target.value
@@ -221,7 +221,7 @@ const Signup = () => {
                   <FormControl className='mb-2' isRequired isInvalid={error.passwordError}>
                     <FormLabel>Password</FormLabel>
                     <InputGroup>
-                      <Input id='password' focusBorderColor='yellow.400' type={showPassword ? 'text' : 'password'} placeholder='Enter your password' onChange={(e) => {
+                      <Input id='password' className='input' focusBorderColor='yellow.400' type={showPassword ? 'text' : 'password'} placeholder='Enter your password' onChange={(e) => {
                         setProfile({
                           ...profile,
                           password: e.target.value
@@ -239,7 +239,7 @@ const Signup = () => {
                   <FormControl isRequired isInvalid={error.confirmPasswordError}>
                     <FormLabel>Confirm Password</FormLabel>
                     <InputGroup>
-                      <Input id='confirmPassword' focusBorderColor='yellow.400' type={showPassword ? 'text' : 'password'} placeholder='Enter your password' onChange={(e) => {
+                      <Input id='confirmPassword' className='input' focusBorderColor='yellow.400' type={showPassword ? 'text' : 'password'} placeholder='Enter your password' onChange={(e) => {
                         setProfile({
                           ...profile,
                           confirmPassword: e.target.value

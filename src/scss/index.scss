@@ -1,7 +1,7 @@
 .notes {
     background-color: red;
 }
-.test-page, .notes-page, .archive-page, .trash-page, .profile-page, .login-page, .signup-page {
+.test-page, .notes-page, .archive-page, .trash-page, .profile-page, .login-page, .signup-page, .tasks-page {
     height: 88vh;
 }
 .main-app {
@@ -13,6 +13,14 @@
 .main-section {
     overflow-y: auto;
 }
+
+.profile-card {
+    border-radius: 30px !important;
+}
+
+.login-card, .signup-card {
+    border-radius: 30px !important;
+}
 .link {
     border-top-right-radius: 50px;
     border-bottom-right-radius: 50px;
@@ -21,5 +29,22 @@
     background-color: #ffb02e;
 }
 .account:hover {
-    background-color: rgb(78, 78, 78);
+    background-color: #343A40;
+}
+
+.dark-theme {
+    background-color: #212529 !important;
+    color: #CED4DA !important;
+}
+.light-theme {
+    background-color: #f8f9fa !important;
+    color: #212529 !important;
+}
+.dark-element {
+    background-color: #343A40 !important;
+    color: #CED4DA !important;
+}
+.light-element {
+    background-color: #DEE2E6 !important;
+    color: #495057 !important;
 }

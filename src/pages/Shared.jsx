@@ -1,36 +1,36 @@
-import { useEffect, useState } from "react" // eslint-disable-line no-unused-vars
-import NotesContainer from "../components/NotesContainer"
-import SideNav from "../components/SideNav"
-import ThemeState from "../context/ThemeContext"
+import { useEffect, useState } from "react"; // eslint-disable-line no-unused-vars
+import NotesContainer from "../components/NotesContainer";
+import SideNav from "../components/SideNav";
+import ThemeState from "../context/ThemeContext";
 // import UserAuth from "../context/UserContext"
 // import { collection, getDocs } from "firebase/firestore"
 // import firebase from "../js/firebase"
-import NavState from "../context/NavContext"
-import { IconButton, useDisclosure, Tooltip } from "@chakra-ui/react"
-import SharedModal from "../components/modals/SharedModal"
-import NotesState from "../context/NotesContext"
-import { MdRefresh } from "react-icons/md"
-import UserAuth from "../context/UserContext"
-import { useNavigate } from "react-router-dom"
+import NavState from "../context/NavContext";
+import { IconButton, useDisclosure, Tooltip } from "@chakra-ui/react";
+import SharedModal from "../components/modals/SharedModal";
+import NotesState from "../context/NotesContext";
+import { MdRefresh } from "react-icons/md";
+import UserAuth from "../context/UserContext";
+import { useNavigate } from "react-router-dom";
 
 const Shared = () => {
-  const { theme } = ThemeState()
-  const { user } = UserAuth()
-  const { searchText } = NavState()
-  const navigate = useNavigate()
+  const { theme } = ThemeState();
+  const { user } = UserAuth();
+  const { searchText } = NavState();
+  const navigate = useNavigate();
 
   // Props
   // const db = firebase.db
-  const { isOpen, onOpen, onClose } = useDisclosure()
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   // const [sharedNotes, setSharedNotes] = useState([])
-  const { sharedNotes, getNotes } = NotesState()
+  const { sharedNotes, getNotes } = NotesState();
 
-  const [currentNote, setCurrentNote] = useState({})
+  const [currentNote, setCurrentNote] = useState({});
 
   const setModalData = (note) => {
-    setCurrentNote({ ...note })
-  }
+    setCurrentNote({ ...note });
+  };
   // const unArchiveCurrentNote = async () => {
   //   try {
   //     const userNotes = doc(collection(db, 'notes'), user.uid)
@@ -65,7 +65,6 @@ const Shared = () => {
   //   }
   // }
 
-
   // const getNotes = async () => {
   //   try {
   //     const notes = []
@@ -91,24 +90,39 @@ const Shared = () => {
   // }, [user]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <div className={`notes-page ${theme === 'dark' ? 'bg-dark text-white' : 'bg-white'}`}>
-      <div className="main-app d-flex flex-row p-0 m-0">
+    <div
+      className={`notes-page  ${
+        theme === "dark" ? "dark-theme text-white" : "light-theme"
+      }`}
+    >
+      <div className='main-app d-flex flex-row p-0 m-0'>
         <SideNav />
-        <div className="main-section col-12 col-md-10 py-3">
-          <div className="main-content">
-            <div className="header d-flex align-items-center mb-3">
-              <h5 className="ms-3 w-100">Shared with you</h5>
-              <Tooltip title="Refresh" placement="bottom">
-                <IconButton icon={<MdRefresh />} className="me-3" isRound={true} onClick={() => {
-                  if (user) {
-                    getNotes('shared')
-                  } else {
-                    navigate('/login')
-                  }
-                }} />
+        <div className='main-section col-12 col-md-10 py-3'>
+          <div className='main-content'>
+            <div className='header d-flex align-items-center mb-3 px-2 px-md-3'>
+              <h5 className='w-100'>Shared with you</h5>
+              <Tooltip title='Refresh' placement='bottom'>
+                <IconButton
+                  icon={<MdRefresh />}
+                  className='me-3'
+                  isRound={true}
+                  onClick={() => {
+                    if (user) {
+                      getNotes("shared");
+                    } else {
+                      navigate("/login");
+                    }
+                  }}
+                />
               </Tooltip>
             </div>
-            <NotesContainer notes={sharedNotes} searchText={searchText} setModalData={setModalData} onOpen={onOpen} from={'shared'} />
+            <NotesContainer
+              notes={sharedNotes}
+              searchText={searchText}
+              setModalData={setModalData}
+              onOpen={onOpen}
+              from={"shared"}
+            />
           </div>
         </div>
 
@@ -117,12 +131,12 @@ const Shared = () => {
           onClose={onClose}
           onOpen={onOpen}
           currentNote={currentNote}
-        // unArchiveCurrentNote={unArchiveCurrentNote}
-        // deleteCurrentNote={deleteCurrentNote}
+          // unArchiveCurrentNote={unArchiveCurrentNote}
+          // deleteCurrentNote={deleteCurrentNote}
         />
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Shared
+export default Shared;

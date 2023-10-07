@@ -82,12 +82,11 @@ const Login = () => {
   // console.log(isMobile)
 
   return (
-    <div className={`login-page main-section d-flex flex-column flex-md-row ${theme === 'dark' ? 'bg-dark text-white' : 'bg-light text-dark'}`}>
+    <div className={`login-page main-section d-flex flex-column flex-md-row  ${theme === 'dark' ? 'dark-theme text-white' : 'light-theme'}`}>
       <Banner />
       <div className={`login-right w-100 ${theme === 'dark' ? 'bg-dark text-white' : ''}`}>
         <div className="login-container py-5 d-flex flex-row justify-content-center align-items-center">
-          <Card size='md' className={`login-card p-sm-1 p-md-3  w-75 ${theme === 'dark' ? 'bg-dark text-white' : 'bg-light text-dark'}`}
-            border={theme == 'dark' ? '1px' : '0px'}>
+          <Card size='md' className={`login-card p-sm-1 p-md-3 w-75 ${theme === 'dark' ? 'dark-element' : 'light-element'}`}>
             <CardBody>
               <div className="heading">
                 <Heading size='lg' className="login-heading">Log in</Heading>
@@ -98,7 +97,7 @@ const Login = () => {
                   <FormLabel>
                     Email
                   </FormLabel>
-                  <Input focusBorderColor='yellow.400' type='email' placeholder='Enter your email' id='email' onChange={(e) => {
+                  <Input className='input' focusBorderColor='yellow.400' type='email' placeholder='Enter your email' id='email' onChange={(e) => {
                     setEmail(e.target.value)
                     setEmailError(false);
                   }} />
@@ -108,7 +107,7 @@ const Login = () => {
                     Password
                   </FormLabel>
                   <InputGroup>
-                    <Input focusBorderColor='yellow.400' type={showPassword ? 'text' : 'password'} placeholder='Enter your password' id='login-password' onChange=
+                    <Input className='input' focusBorderColor='yellow.400' type={showPassword ? 'text' : 'password'} placeholder='Enter your password' id='login-password' onChange=
                       {(e) => {
                         setPassword(e.target.value)
                         setPasswordError(false)

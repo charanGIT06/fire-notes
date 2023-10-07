@@ -15,7 +15,7 @@ const SideNav = () => {
   } 
 
   return (
-    <div className={`side-nav col-2 d-none d-md-block py-4 ${theme === 'dark' ? 'bg-dark text-white' : 'bg-white'}`}>
+    <div className={`side-nav col-2 d-none d-md-block py-4 ${theme === 'dark' ? 'dark-theme text-white' : 'light-theme'}`}>
       <div className="links pe-1">
         <ul className="list-unstyled">
           {[['/', 'Notes'], ['/shared', 'Shared'], ['/archive', 'Archive'], ['/trash', 'Trash'], ['/profile', 'Profile']].map(([route, text]) => {
