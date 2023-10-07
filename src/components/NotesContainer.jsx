@@ -29,7 +29,7 @@ const NotesContainer = ({ notes, searchText, setModalData, onOpen, from }) => { 
 	}, [])
 
 	return (
-		<div className="pb-3 container px-1 px-md-4">
+		<div className="pb-3 container px-2 px-md-4">
 			<div className="row d-flex flex-row">
 				{
 					notes.filter((note) => {

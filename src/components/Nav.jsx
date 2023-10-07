@@ -24,7 +24,7 @@ const Nav = () => {
 
   return (
     <>
-      <div className={`nav ${theme === 'dark' ? 'bg-dark text-white' : 'bg-white'}`}>
+      <div className={`nav ${theme === 'dark' ? 'dark-theme' : 'light-theme'}`}>
         <div className="big-screens d-none d-md-block w-100 p-2">
           <div className="d-flex flex-row align-items-center w-100 py-3 px-3">
             <Link to={'/'} className="w-25">🔥Fire Notes</Link>
@@ -48,9 +48,9 @@ const Nav = () => {
             </div>
           </div>
         </div>
-        <div className="mobile d-block d-md-none px-2 pt-3 w-100">
+        <div className="mobile d-block d-md-none px-2 py-3 w-100">
           <div className={`search-bar d-flex flex-row align-items-center w-100 p-2 ${theme === 'dark' ? 'dark-element' : 'light-element'}`} style={{borderRadius: '25px' }}>
-            <GiHamburgerMenu className='nav-icon ms-2' size='1.5rem' color="grey" onClick={() => { onOpen() }} />
+            <GiHamburgerMenu className='nav-icon ms-2' size='1.5rem' color={`${theme === "dark" ? "#ADB5BD" : "#495057"}`} onClick={() => { onOpen() }} />
             <Input type="text" variant='unstyled' className="mx-3" placeholder="Search" onChange={(e) => {
               setSearchText(e.target.value)
             }} />

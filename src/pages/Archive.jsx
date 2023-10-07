@@ -68,7 +68,7 @@ const Archive = () => {
       <div className="main-app container-fluid d-flex flex-row p-0 m-0">
         <SideNav />
 
-        <div className="main-content py-3 col-12 col-md-10 px-2 px-md-3">
+        <div className="main-content py-3 col-12 col-md-10 px-3 px-md-3">
           <h5 className='mb-2'>Archived Notes</h5>
           <NotesContainer notes={archiveNotes} searchText={searchText} setModalData={setModalData} onOpen={onOpen} from={'archive'} />
         </div>
