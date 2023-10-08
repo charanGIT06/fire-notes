@@ -1,4 +1,4 @@
-import SideNav from "../components/SideNav";
+import SideNav from "../../components/Navigation/SideNav";
 import {
   Input,
   Textarea,
@@ -17,13 +17,13 @@ import {
   setDoc,
   serverTimestamp,
 } from "firebase/firestore";
-import firebase from "../js/firebase.js";
-import NotesContainer from "../components/NotesContainer";
-import NavState from "../context/NavContext";
-import UserAuth from "../context/UserContext";
-import NoteModal from "../components/modals/NoteModal";
-import ThemeState from "../context/ThemeContext";
-import NotesState from "../context/NotesContext";
+import firebase from "../../js/firebase.js";
+import NotesContainer from "../../components/Notes/NotesContainer";
+import NavState from "../../context/NavContext";
+import UserAuth from "../../context/UserContext";
+import NoteModal from "../../components/modals/NoteModal";
+import ThemeState from "../../context/ThemeContext";
+import NotesState from "../../context/NotesContext";
 import { useNavigate } from "react-router-dom";
 
 const Notes = () => {

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"; // eslint-disable-line no-unused-vars
-import NotesContainer from "../components/NotesContainer";
-import SideNav from "../components/SideNav";
+import NotesContainer from "../components/Notes/NotesContainer";
+import SideNav from "../components/Navigation/SideNav";
 import ThemeState from "../context/ThemeContext";
 // import UserAuth from "../context/UserContext"
 // import { collection, getDocs } from "firebase/firestore"

@@ -1,5 +1,5 @@
 import propTypes from "prop-types";
-import "../scss/notes.scss";
+import "../../scss/notes.scss";
 import {
   IconButton,
   Input,
@@ -15,8 +15,8 @@ import {
   TagLabel,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
-import ThemeState from "../context/ThemeContext";
-import CollaboratorPopover from "./popovers/CollaboratorPopover"; // eslint-disable-line no-unused-vars
+import ThemeState from "../../context/ThemeContext";
+import CollaboratorPopover from "../popovers/CollaboratorPopover"; // eslint-disable-line no-unused-vars
 import {
   BiSolidArchiveOut,
   BiSolidLabel,
@@ -28,14 +28,14 @@ import {
   BsPinAngleFill,
   BsPinFill,
 } from "react-icons/bs";
-import NotesState from "../context/NotesContext";
+import NotesState from "../../context/NotesContext";
 import { FaTrashRestoreAlt } from "react-icons/fa";
 import { MdClose } from "react-icons/md";
 import { useEffect, useState } from "react";
 import { collection, getDocs, query, where } from "firebase/firestore";
-import firebase from "../js/firebase";
-import ShareBody from "./modals/ShareBody";
-import LabelsBody from "./modals/LabelsBody";
+import firebase from "../../js/firebase";
+import ShareBody from "../modals/ShareBody";
+import LabelsBody from "../modals/LabelsBody";
 
 const NoteCard = ({ page }) => {
   NoteCard.propTypes = {
@@ -118,11 +118,11 @@ const NoteCard = ({ page }) => {
   return (
     <div className={`note-card`}>
       <div
-      style={{
-        height: "100%",
-        borderTopLeftRadius: "30px",
-        borderTopRightRadius: "30px",
-      }}
+        style={{
+          height: "100%",
+          borderTopLeftRadius: "30px",
+          borderTopRightRadius: "30px",
+        }}
         className={`m-0 px-3 ${
           theme === "dark" ? "dark-element" : "light-element"
         }`}

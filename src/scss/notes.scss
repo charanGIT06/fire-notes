@@ -106,7 +106,7 @@
   bottom: 15px;
   right: 15px;
 }
-.note-card {
+.note-card, .task-card {
   width: 100%;
   height: 100%;
   .heading {
@@ -118,6 +118,10 @@
   height: 15%;
 }
 .card-content {
+  height: 70%;
+  overflow-y: auto;
+}
+.card-body {
   height: 70%;
   overflow-y: auto;
 }

@@ -1,13 +1,10 @@
-import SideNav from "../components/SideNav";
-import NotesState from "../context/NotesContext";
-import ThemeState from "../context/ThemeContext";
+import SideNav from "../../components/Navigation/SideNav";
+import NotesState from "../../context/NotesContext";
+import ThemeState from "../../context/ThemeContext";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect } from "react";
-import NoteCard from "../components/NoteCard";
-import {
-  useDisclosure,
-  SlideFade,
-} from "@chakra-ui/react";
+import NoteCard from "../../components/Notes/NoteCard";
+import { useDisclosure, SlideFade } from "@chakra-ui/react";
 
 const PresentNote = () => {
   const { presentNote } = NotesState();
