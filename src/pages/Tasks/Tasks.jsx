@@ -7,6 +7,7 @@ import ThemeState from "../../context/ThemeContext";
 import { BiPlus } from "react-icons/bi";
 import { AiOutlineArrowRight, AiOutlineClose } from "react-icons/ai";
 import { useState } from "react";
+import { isMobile } from "react-device-detect";
 
 const Tasks = () => {
   const { theme } = ThemeState();
@@ -41,7 +42,7 @@ const Tasks = () => {
           }}
         >
           <div
-            className={`new-task-container ${
+            className={`${isMobile ? 'new-task-container-mobile' : 'new-task-container'} ${
               theme === "dark" ? "dark-element" : "light-element"
             } p-3 mb-2 d-flex ${newTaskState ? "d-block" : "d-none"}`}
           >

@@ -76,7 +76,7 @@ export function TasksProvider({ children }) {
           duration: 3000,
           isClosable: true,
         });
-        navigate("/ptask/tasks");
+        navigate("/tasks");
         getTasks("active");
       });
     } catch (error) {
