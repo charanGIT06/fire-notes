@@ -169,7 +169,7 @@ const TaskList = ({
                         timeStamp: new Date().getTime(),
                       },
                     ],
-                    checked: presentTask.items.checked,
+                    checked: presentTask.items.checked || [],
                   },
                 });
                 e.target.value = "";

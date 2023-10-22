@@ -108,6 +108,7 @@ const TaskCard = ({ page }) => {
           colorScheme='yellow'
           onClick={() => {
             updatePresentTask();
+            navigate('/tasks')
           }}
         >
           Save

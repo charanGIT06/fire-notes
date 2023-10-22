@@ -110,7 +110,7 @@ export function TasksProvider({ children }) {
     getTasks("active");
     getTasks("archive");
     getTasks("trash");
-  }, [user]);
+  }, [user]); // eslint-disable-line
 
   return (
     <TasksContext.Provider
