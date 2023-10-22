@@ -1,30 +1,38 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import ThemeState from "../../context/ThemeContext";
 import {
-  Checkbox,
+  Button,
   IconButton,
   Input,
   SlideFade,
   useDisclosure,
+  Tooltip,
 } from "@chakra-ui/react";
 import { MdClose } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import TasksState from "../../context/TasksContext";
-import Task from "./Task";
 import "../../scss/index.scss";
+import TaskList from "./TaskList";
+import propTypes from "prop-types";
+import { BiSolidTrashAlt } from "react-icons/bi";
 
 const TaskCard = ({ page }) => {
+  TaskCard.propTypes = {
+    page: propTypes.string,
+  };
+
   const { theme } = ThemeState();
   const navigate = useNavigate();
 
-  const { presentTask, setPresentTask } = TasksState();
-  const { isOpen, onToggle } = useDisclosure();
+  const { presentTask, setPresentTask, updatePresentTask, deleteTask } =
+    TasksState();
+  const { isOpen, onToggle } = useDisclosure(); // eslint-disable-line
 
   useEffect(() => {
     if (presentTask.id) {
       onToggle();
     }
-  }, []);
+  }, []); // eslint-disable-line
 
   return (
     <div className={`task-card m-0 px-3`}>
@@ -36,6 +44,9 @@ const TaskCard = ({ page }) => {
           className={`task-title heading`}
           placeholder='Task title'
           defaultValue={presentTask.title}
+          onChange={(e) => {
+            setPresentTask({ ...presentTask, title: e.target.value });
+          }}
         />
         <IconButton
           icon={<MdClose size={"25px"} />}
@@ -48,117 +59,60 @@ const TaskCard = ({ page }) => {
           }}
         />
       </div>
-      {/* <SlideFade
-        in={isOpen}
-        offsetY='100px'
-        className='w-100 mx-2 mx-md-3'
-        transition={{ enter: ".5s", exit: "1s" }}
-        > */}
       <div className='card-body d-flex flex-column flex-md-row'>
-        <div className='p-2 col-12 col-md-6'>
-          <h6>Incomplete</h6>
-          <div
-            className={`incomplete p-4 ${
-              theme === "dark" ? "dark-element" : "light-element"
-            }`}
-            style={{ borderRadius: "20px" }}
-          >
-            {presentTask?.items
-              ?.filter(({ id, text, completed }) => {
-                if (!completed) {
-                  return { id, text, completed };
-                }
-              })
-              ?.map(({ id, text, completed }) => {
-                return (
-                  <div key={id} className='d-flex flex-row my-3'>
-                    <Checkbox
-                      size='md'
-                      colorScheme='yellow'
-                      defaultChecked={completed}
-                      onChange={(e) => {
-                        const items = presentTask.items.map((item) => {
-                          if (item.id === id) {
-                            item.completed = e.target.checked;
-                          }
-                          return item;
-                        });
-                        setPresentTask({ ...presentTask, items });
-                      }}
-                    />
-                    <Input
-                      type='text'
-                      variant='unstyled'
-                      isReadOnly={page === "shared" ? true : false}
-                      className={`task-item ms-3 ${
-                        theme === "dark" ? "dark-element" : "light-element"
-                      }`}
-                      placeholder='Task item'
-                      defaultValue={text}
-                      style={{
-                        textDecoration: completed ? "line-through" : "",
-                      }}
-                    />
-                  </div>
-                );
-              })}
-          </div>
-        </div>
-        <div className='p-2 col-12 col-md-6'>
-          <h6>Complete</h6>
-          <div
-            className={`complete p-4 ${
-              theme === "dark" ? "dark-element" : "light-element"
-            }`}
-            style={{ borderRadius: "20px", overflowY: "auto" }}
-          >
-            {presentTask?.items
-              ?.filter(({ id, text, completed }) => {
-                if (completed) {
-                  return { id, text, completed };
-                }
-              })
-              ?.map(({ id, text, completed }) => {
-                return (
-                  <div
-                    key={id}
-                    className='d-flex flex-row my-3'
-                    style={{ overflowY: "auto" }}
-                  >
-                    <Checkbox
-                      size='md'
-                      colorScheme='yellow'
-                      defaultChecked={completed}
-                      onChange={(e) => {
-                        const items = presentTask.items.map((item) => {
-                          if (item.id === id) {
-                            item.completed = e.target.checked;
-                          }
-                          return item;
-                        });
-                        setPresentTask({ ...presentTask, items });
-                      }}
-                    />
-                    <Input
-                      type='text'
-                      variant='unstyled'
-                      isReadOnly={page === "shared" ? true : false}
-                      className={`task-item ms-3 ${
-                        theme === "dark" ? "dark-element" : "light-element"
-                      }`}
-                      placeholder='Task item'
-                      defaultValue={text}
-                      style={{
-                        textDecoration: completed ? "line-through" : "",
-                      }}
-                    />
-                  </div>
-                );
-              })}
-          </div>
-        </div>
+        <SlideFade
+          in={isOpen}
+          offsetY='100px'
+          className='w-100'
+          transition={{ enter: ".5s", exit: "1s" }}
+        >
+          <TaskList
+            tasks={presentTask.items?.unchecked}
+            presentTask={presentTask}
+            setPresentTask={setPresentTask}
+            ticked={true}
+          />
+        </SlideFade>
+        <SlideFade
+          in={isOpen}
+          offsetY='100px'
+          className='w-100'
+          transition={{ enter: ".5s", exit: "1s" }}
+        >
+          <TaskList
+            tasks={presentTask.items?.checked}
+            presentTask={presentTask}
+            setPresentTask={setPresentTask}
+            ticked={false}
+          />
+        </SlideFade>
       </div>
-      {/* </SlideFade> */}
+      <div className='card-footer d-flex flex-row align-items-center'>
+        <div className='left w-100 d-flex flex-row'>
+          <Tooltip label='Trash' placement='top' hasArrow='true'>
+            <IconButton
+              variant='ghost'
+              size={"lg"}
+              isRound={true}
+              color={`${theme === "dark" ? "#ADB5BD" : "#495057"}`}
+              className='me-1'
+              icon={<BiSolidTrashAlt size={"22px"} />}
+              onClick={() => {
+                deleteTask();
+              }}
+            />
+          </Tooltip>
+        </div>
+        <Button
+          variant='solid'
+          colorScheme='yellow'
+          onClick={() => {
+            updatePresentTask();
+          }}
+        >
+          Save
+        </Button>
+      </div>
     </div>
   );
 };

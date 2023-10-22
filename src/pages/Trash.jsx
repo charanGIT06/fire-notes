@@ -8,18 +8,19 @@ import NavState from "../context/NavContext";
 import SideNav from "../components/Navigation/SideNav";
 import ThemeState from "../context/ThemeContext";
 import UserAuth from "../context/UserContext";
-import { useDisclosure } from "@chakra-ui/react";
+import { Button, useDisclosure, useToast } from "@chakra-ui/react";
 import NotesState from "../context/NotesContext";
 
 const Trash = () => {
   const db = firebase.db;
   const { user } = UserAuth();
   const { theme } = ThemeState();
+  const toast = useToast();
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { searchText } = NavState();
 
-  const { getNotes, trashNotes } = NotesState();
+  const { getNotes, trashNotes, emptyTrash } = NotesState();
 
   const [currentNote, setCurrentNote] = useState({});
 
@@ -76,7 +77,23 @@ const Trash = () => {
       <div className='main-app container-fluid d-flex flex-row p-0 m-0'>
         <SideNav />
         <div className='main-section py-3 col-12 col-md-10 px-3 px-md-3'>
-          <h5 className='mb-2'>Trash</h5>
+          <div className='d-flex flex-row align-items-center justify-content-between me-3'>
+            <h5 className='mb-2'>Trash</h5>
+            <Button colorScheme='red' variant='solid' onClick={() => {
+              if (trashNotes.length > 0) {
+                emptyTrash();
+              } else {
+                toast({
+                  title: "Trash is already empty",
+                  status: "warning",
+                  duration: 3000,
+                  isClosable: true,  
+                })
+              }
+            }}>
+              Delete all
+            </Button>
+          </div>
           <NotesContainer
             notes={trashNotes}
             searchText={searchText}

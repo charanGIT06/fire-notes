@@ -204,7 +204,9 @@ const Notes = () => {
                     className={`new-note-header mb-2 d-flex flex-row `}
                     onKeyDown={(e) => {
                       if (e.key === "Escape") {
-                        addNote();
+                        if(newNote.title !== "" || newNote.content !== "") {
+                          addNote();
+                        }
                       }
                     }}
                   >

@@ -11,8 +11,6 @@ import {
   ModalOverlay,
   ModalContent,
   Avatar,
-  Tag,
-  TagLabel,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import ThemeState from "../../context/ThemeContext";
@@ -292,7 +290,7 @@ const NoteCard = ({ page }) => {
                   size={"lg"}
                   isRound={true}
                   color={`${theme === "dark" ? "#ADB5BD" : "#495057"}`}
-                  className={`${page === "notes" ? "me-1" : "d-none"}`}
+                  className={`${(page === "notes") ? "me-1" : "d-none"}`}
                   icon={<BiSolidTrashAlt size={"22px"} />}
                   onClick={() => {
                     navigate(`/${page === "notes" ? "" : page}`);

@@ -1,10 +1,17 @@
 import { useNavigate } from "react-router-dom";
 import TasksState from "../../context/TasksContext";
-import Task from "./Task";
+import TaskDisplayCard from "./TaskDisplayCard";
 import { ScaleFade, useDisclosure } from "@chakra-ui/react";
 import { useEffect } from "react";
+import propTypes from "prop-types";
 
 const TasksContainer = ({ tasks, searchText, from }) => {
+  TasksContainer.propTypes = {
+    tasks: propTypes.array,
+    searchText: propTypes.string,
+    from: propTypes.string,
+  };
+
   const { setPresentTask } = TasksState();
   const navigate = useNavigate();
   const { isOpen, onToggle } = useDisclosure();
@@ -37,7 +44,7 @@ const TasksContainer = ({ tasks, searchText, from }) => {
                   }}
                 >
                   <ScaleFade initialScale={0.8} in={isOpen}>
-                    <Task task={task} />
+                    <TaskDisplayCard task={task} />
                   </ScaleFade>
                 </div>
               );

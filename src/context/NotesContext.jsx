@@ -12,6 +12,7 @@ import {
 } from "firebase/firestore";
 import firebase from "../js/firebase.js";
 import UserAuth from "./UserContext";
+import { useToast } from "@chakra-ui/react";
 
 const NotesContext = createContext();
 
@@ -22,6 +23,7 @@ export function NotesProvider({ children }) {
 
   const db = firebase.db;
   const { user } = UserAuth();
+  const toast = useToast();
 
   const [activeNotes, setActiveNotes] = useState([]);
   const [archiveNotes, setArchiveNotes] = useState([]);
@@ -130,6 +132,28 @@ export function NotesProvider({ children }) {
 
       console.log("note restored from trash");
       getNotes("active");
+      getNotes("trash");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const emptyTrash = async () => {
+    try {
+      const trashCollection = collection(db, "notes", user.uid, "trash");
+      const q = query(trashCollection);
+      await getDocs(q).then((querySnapshot) => {
+        querySnapshot.forEach(async (doc) => {
+          await deleteDoc(doc.ref);
+        });
+      });
+      toast({
+        title: "Trash Emptied!",
+        description: "All notes in the trash have been deleted.",
+        status:'success',
+        duration: 2000,
+        isClosable: true,
+      });
       getNotes("trash");
     } catch (error) {
       console.log(error);
@@ -268,6 +292,7 @@ export function NotesProvider({ children }) {
         unArchiveNote,
         restoreNote,
         shareNote,
+        emptyTrash,
       }}
     >
       {children}
